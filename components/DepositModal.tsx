@@ -29,9 +29,9 @@ export default function DepositModal() {
   };
 
   return (
-    <div className="bg-[var(--c-secondary)] rounded-2xl p-6 border border-[var(--c-border)]">
+    <div className="bg-(--c-secondary) rounded-2xl p-6 border border-(--c-border)">
       <h3 className="text-lg font-semibold mb-1 text-white">Top Up Tokens</h3>
-      <p className="text-xs text-[var(--c-muted)] mb-4">1 MON = {TOKENS_PER_MON} Tokens</p>
+      <p className="text-xs text-(--c-muted) mb-4">1 MON = {TOKENS_PER_MON} Tokens</p>
 
       <div className="space-y-4">
         {/* Package Options */}
@@ -49,10 +49,10 @@ export default function DepositModal() {
                     : 'border-(--c-border) bg-(--c-bg) hover:border-(--c-border-accent)'
                 } disabled:opacity-50`}
               >
-                <Coins size={20} className="text-[var(--c-accent)]" />
+                <Coins size={20} className="text-(--c-accent)" />
                 <span className="text-lg font-bold text-white">{p.tokens}</span>
-                <span className="text-[10px] text-[var(--c-muted)]">tokens</span>
-                <span className="text-xs font-semibold text-[var(--c-accent)] mt-1">{p.mon} MON</span>
+                <span className="text-[10px] text-(--c-muted)">tokens</span>
+                <span className="text-xs font-semibold text-(--c-accent) mt-1">{p.mon} MON</span>
               </button>
             );
           })}
@@ -62,7 +62,7 @@ export default function DepositModal() {
         <button
           onClick={handleDeposit}
           disabled={selected === null || isBusy}
-          className="w-full bg-[var(--c-primary)] hover:bg-[var(--c-primary-hover)] disabled:bg-[var(--c-hover-bg)] disabled:opacity-50 text-white font-semibold py-3 rounded-xl transition flex items-center justify-center gap-2"
+          className="w-full bg-(--c-primary) hover:bg-(--c-primary-hover) disabled:bg-(--c-hover-bg) disabled:opacity-50 text-white font-semibold py-3 rounded-xl transition flex items-center justify-center gap-2"
         >
           {isBusy ? (
             <>
@@ -77,12 +77,12 @@ export default function DepositModal() {
         </button>
 
         {txHash && (
-          <div className="text-xs text-[var(--c-muted)] text-center">
+          <div className="text-xs text-(--c-muted) text-center">
             <a
               href={getBlockExplorerUrl(txHash)}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-[var(--c-accent)] hover:underline"
+              className="text-(--c-accent) hover:underline"
             >
               View transaction on explorer
             </a>

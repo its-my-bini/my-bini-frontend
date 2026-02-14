@@ -16,7 +16,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
   return (
     <div className="flex h-screen w-full bg-(--c-bg) text-white">
       {/* DESKTOP SIDEBAR (Hidden on Mobile) */}
-      <aside className="hidden md:flex w-80 flex-col border-r border-(--c-border-light) bg-[var(--c-secondary)]">
+      <aside className="hidden md:flex w-80 flex-col border-r border-(--c-border-light) bg-(--c-secondary)">
         <div className="p-4 border-b border-(--c-border-light) flex justify-between items-center">
           <h1 className="font-bold text-xl ml-2">My Bini</h1>
           <ConnectButton accountStatus="avatar" chainStatus="none" showBalance={false} />
@@ -33,7 +33,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
       <main className="flex-1 flex flex-col relative h-full w-full overflow-hidden">
         {/* Mobile Header (Hidden on Desktop, hidden in chat) */}
         {!isInChat && (
-          <header className="md:hidden h-14 bg-[var(--c-secondary)] flex items-center justify-between px-4 border-b border-(--c-border-light) shrink-0 z-10">
+          <header className="md:hidden h-14 bg-(--c-secondary) flex items-center justify-between px-4 border-b border-(--c-border-light) shrink-0 z-10">
             <span className="font-bold">My Bini</span>
             <ConnectButton accountStatus="avatar" chainStatus="none" showBalance={false} />
           </header>
@@ -62,7 +62,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
 
         {/* MOBILE BOTTOM NAV (Hidden on Desktop, hidden in chat) */}
         {!isInChat && (
-          <nav className="md:hidden h-16 bg-[var(--c-secondary)] border-t border-(--c-border-light) flex items-center justify-around shrink-0 z-10 pb-safe">
+          <nav className="md:hidden h-16 bg-(--c-secondary)er-t border-(--c-border-light) flex items-center justify-around shrink-0 z-10 pb-safe">
             <MobileNavItem href="/dashboard" icon={<MessageCircle />} label="Chats" />
             <MobileNavItem href="/wallet" icon={<Wallet />} label="Wallet" />
             <MobileNavItem href="/profile" icon={<User />} label="Settings" />
@@ -79,11 +79,11 @@ function SidebarItem({ icon, label, href }: { icon: React.ReactNode; label: stri
   return (
     <Link
       href={href}
-      className={`flex items-center gap-4 px-4 py-3 hover:bg-[var(--c-hover-bg)] transition ${
-        isActive ? 'bg-[var(--c-hover-bg)] border-l-4 border-[var(--c-primary)]' : ''
+      className={`flex items-center gap-4 px-4 py-3 hover:bg-(--c-hover-bg) transition ${
+        isActive ? 'bg-(--c-hover-bg) border-l-4 border-(--c-primary)' : ''
       }`}
     >
-      <div className={isActive ? 'text-[var(--c-primary)]' : 'text-[var(--c-muted)]'}>{icon}</div>
+      <div className={isActive ? 'text-(--c-primary)' : 'text-(--c-muted)'}>{icon}</div>
       <span className="font-medium">{label}</span>
     </Link>
   );
@@ -94,8 +94,8 @@ function MobileNavItem({ icon, label, href }: { icon: React.ReactNode; label: st
   const isActive = pathname === href || pathname.startsWith(href + '/');
   return (
     <Link href={href} className="flex flex-col items-center justify-center w-full h-full">
-      <div className={`${isActive ? 'text-[var(--c-primary)]' : 'text-[var(--c-muted)]'}`}>{icon}</div>
-      <span className={`text-[10px] mt-1 ${isActive ? 'text-[var(--c-primary)]' : 'text-[var(--c-muted-dim)]'}`}>{label}</span>
+      <div className={`${isActive ? 'text-(--c-primary)' : 'text-(--c-muted)'}`}>{icon}</div>
+      <span className={`text-[10px] mt-1 ${isActive ? 'text-(--c-primary)' : 'text-(--c-muted-dim)'}`}>{label}</span>
     </Link>
   );
 }

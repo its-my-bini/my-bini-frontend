@@ -121,11 +121,11 @@ export default function DashboardPage() {
     return (
       <AppLayout>
         <div className="flex flex-col items-center justify-center min-h-full p-8">
-          <MessageCircle className="w-16 h-16 text-[var(--c-muted-dim)] mb-4" />
+          <MessageCircle className="w-16 h-16 text-(--c-muted-dim) mb-4" />
           <h2 className="text-2xl font-bold text-white mb-2">
             Connect Your Wallet
           </h2>
-          <p className="text-[var(--c-muted)] mb-8 text-center">
+          <p className="text-(--c-muted) mb-8 text-center">
             Connect your wallet to start chatting with your AI girlfriends
           </p>
           <ConnectButton showBalance={false} />
@@ -139,7 +139,7 @@ export default function DashboardPage() {
       <div className="p-4 md:p-8 max-w-4xl mx-auto">
         <div className="mb-6">
           <h1 className="text-3xl font-bold text-white mb-2">Your Chats</h1>
-          <p className="text-[var(--c-muted)]">
+          <p className="text-(--c-muted)">
             Select a girlfriend to start chatting
           </p>
         </div>
@@ -159,11 +159,11 @@ export default function DashboardPage() {
                   key={persona.id}
                   onClick={() => handleOpenChat(persona.id)}
                   onMouseEnter={() => handleHoverChat(persona.id)}
-                  className="w-full bg-[var(--c-secondary)] border border-[var(--c-border)] hover:border-[var(--c-primary)] hover:bg-[var(--c-secondary-light)] cursor-pointer rounded-2xl p-4 transition text-left"
+                  className="w-full bg-(--c-secondary) border border-(--c-border)r:border-[var(--c-primary)] hover:bg-(--c-secondary-light) cursor-pointer rounded-2xl p-4 transition text-left"
                 >
                   <div className="flex items-center gap-3">
                     {/* Avatar */}
-                    <div className="w-14 h-14 rounded-full flex items-center justify-center flex-shrink-0 overflow-hidden bg-[var(--c-primary)]">
+                    <div className="w-14 h-14 rounded-full flex items-center justify-center shrink-0 overflow-hidden bg-(--c-primary)">
                       {getPersonaImage(persona.id) ? (
                         <Image
                           src={getPersonaImage(persona.id)!}
@@ -187,11 +187,11 @@ export default function DashboardPage() {
                         <h3 className="text-lg font-bold text-white">
                           {persona.name}
                         </h3>
-                        <span className="text-xs text-[var(--c-accent)] bg-[var(--c-primary-dim)] px-2 py-0.5 rounded-full">
+                        <span className="text-xs text-(--c-accent)var(--c-primary-dim)] px-2 py-0.5 rounded-full">
                           {persona.type}
                         </span>
                       </div>
-                      <p className="text-sm text-[var(--c-muted)] truncate">
+                      <p className="text-sm text-(--c-muted) truncate">
                         {relationship
                           ? `Level ${relationship.intimacy_level} · ${relationship.status}`
                           : persona.description}
@@ -199,8 +199,8 @@ export default function DashboardPage() {
                     </div>
 
                     {/* Arrow */}
-                    <div className="flex flex-col items-end gap-1 flex-shrink-0">
-                      <ArrowRight size={20} className="text-[var(--c-muted)]" />
+                    <div className="flex flex-col items-end gap-1 shrink-0">
+                      <ArrowRight size={20} className="text-(--c-muted)" />
                     </div>
                   </div>
                 </button>
@@ -211,8 +211,8 @@ export default function DashboardPage() {
 
         {!isLoadingPersonas && personas.length === 0 && (
           <div className="text-center py-12">
-            <MessageCircle className="w-16 h-16 text-[var(--c-muted-faint)] mx-auto mb-4" />
-            <p className="text-[var(--c-muted)]">No personas available</p>
+            <MessageCircle className="w-16 h-16 text-(--c-muted-faint) mx-auto mb-4" />
+            <p className="text-(--c-muted)">No personas available</p>
           </div>
         )}
       </div>

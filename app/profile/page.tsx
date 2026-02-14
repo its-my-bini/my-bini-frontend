@@ -47,42 +47,42 @@ export default function ProfilePage() {
     <AppLayout>
       <div className="p-4 md:p-8 max-w-4xl mx-auto space-y-8">
         {/* Profile Card */}
-        <div className="bg-[var(--c-secondary)] border border-[var(--c-border)] rounded-3xl p-6 md:p-8">
+        <div className="bg-(--c-secondary) border border-(--c-border) rounded-3xl p-6 md:p-8">
           <div className="flex items-center gap-4 mb-6">
-            <div className="w-16 h-16 bg-[var(--c-primary)] rounded-full flex items-center justify-center">
+            <div className="w-16 h-16 bg-(--c-primary) rounded-full flex items-center justify-center">
               <User size={32} className="text-white" />
             </div>
             <div>
               <h2 className="text-2xl font-bold text-white">Profile</h2>
-              <p className="text-[var(--c-muted)] text-sm">{address?.slice(0, 6)}...{address?.slice(-4)}</p>
+              <p className="text-(--c-muted) text-sm">{address?.slice(0, 6)}...{address?.slice(-4)}</p>
             </div>
           </div>
 
-          <div className="bg-[var(--c-bg)] border border-[var(--c-border)] rounded-2xl p-4 flex items-center justify-around">
+          <div className="bg-(--c-bg) border border-(--c-border) rounded-2xl p-4 flex items-center justify-around">
             <div className="flex flex-col items-center">
-              <MessageCircle size={18} className="text-[var(--c-accent)] mb-1" />
+              <MessageCircle size={18} className="text-(--c-accent) mb-1" />
               <span className="text-lg font-bold text-white">{profile?.relationships?.length || 0}</span>
-              <span className="text-[10px] text-[var(--c-muted)]">Messages</span>
+              <span className="text-[10px] text-(--c-muted)">Messages</span>
             </div>
-            <div className="w-px h-10 bg-[var(--c-border)]" />
+            <div className="w-px h-10 bg-(--c-border)" />
             <div className="flex flex-col items-center">
-              <Heart size={18} className="text-[var(--c-accent)] mb-1" />
+              <Heart size={18} className="text-(--c-accent) mb-1" />
               <span className="text-lg font-bold text-white">{profile?.relationships?.length || 0}</span>
-              <span className="text-[10px] text-[var(--c-muted)]">Relationships</span>
+              <span className="text-[10px] text-(--c-muted)">Relationships</span>
             </div>
-            <div className="w-px h-10 bg-[var(--c-border)]" />
+            <div className="w-px h-10 bg-(--c-border)" />
             <div className="flex flex-col items-center">
-              <Calendar size={18} className="text-[var(--c-accent)] mb-1" />
+              <Calendar size={18} className="text-(--c-accent) mb-1" />
               <span className="text-lg font-bold text-white">1</span>
-              <span className="text-[10px] text-[var(--c-muted)]">Days Active</span>
+              <span className="text-[10px] text-(--c-muted)">Days Active</span>
             </div>
           </div>
         </div>
 
         {/* Theme Selector */}
-        <div className="bg-[var(--c-secondary)] border border-[var(--c-border)] rounded-3xl p-5">
+        <div className="bg-(--c-secondary) border border-(--c-border) rounded-3xl p-5">
           <div className="flex items-center gap-3 mb-4">
-            <Palette size={20} className="text-[var(--c-accent)]" />
+            <Palette size={20} className="text-(--c-accent)" />
             <h3 className="text-lg font-bold text-white">Theme</h3>
           </div>
           <div className="grid grid-cols-4 gap-3">
@@ -95,8 +95,8 @@ export default function ProfilePage() {
                   onClick={() => setTheme(key)}
                   className={`flex flex-col items-center gap-2 p-3 rounded-2xl border-2 transition ${
                     isActive
-                      ? 'border-[var(--c-primary)] bg-[var(--c-primary-dim)]'
-                      : 'border-transparent hover:border-[var(--c-border)]'
+                      ? 'border-(--c-primary) bg-(--c-primary-dim)'
+                      : 'border-transparent hover:border-(--c-border)'
                   }`}
                 >
                   <div
@@ -111,9 +111,9 @@ export default function ProfilePage() {
         </div>
 
         {/* Background Pattern Selector */}
-        <div className="bg-[var(--c-secondary)] border border-[var(--c-border)] rounded-3xl p-5">
+        <div className="bg-(--c-secondary) border border-(--c-border) rounded-3xl p-5">
           <div className="flex items-center gap-3 mb-4">
-            <ImageIcon size={20} className="text-[var(--c-accent)]" />
+            <ImageIcon size={20} className="text-(--c-accent)" />
             <h3 className="text-lg font-bold text-white">Background</h3>
           </div>
           <div className="grid grid-cols-4 gap-3">
@@ -126,8 +126,8 @@ export default function ProfilePage() {
                   onClick={() => setBgPattern(key)}
                   className={`flex flex-col items-center gap-2 p-3 rounded-2xl border-2 transition ${
                     isActive
-                      ? 'border-[var(--c-primary)] bg-[var(--c-primary-dim)]'
-                      : 'border-transparent hover:border-[var(--c-border)]'
+                      ? 'border-(--c-primary) bg-(--c-primary-dim)'
+                      : 'border-transparent hover:border-(--c-border)'
                   }`}
                 >
                   <div
@@ -148,7 +148,7 @@ export default function ProfilePage() {
                         }}
                       />
                     ) : (
-                      <span className="text-[var(--c-muted-dim)] text-lg">∅</span>
+                      <span className="text-(--c-muted-dim) text-lg">∅</span>
                     )}
                   </div>
                   <span className="text-xs text-white font-medium">{p.label}</span>
@@ -160,25 +160,25 @@ export default function ProfilePage() {
 
         {/* Characters Link */}
         <Link href="/profile/character">
-          <div className="bg-[var(--c-secondary)] border border-[var(--c-border)] rounded-3xl p-5 flex items-center justify-between hover:border-[var(--c-border-accent)] transition cursor-pointer">
+          <div className="bg-(--c-secondary) border border-(--c-border) rounded-3xl p-5 flex items-center justify-between hover:border-(--c-border-accent) transition cursor-pointer">
             <div className="flex items-center gap-4">
-              <div className="w-12 h-12 bg-[var(--c-primary-dim)] rounded-full flex items-center justify-center">
-                <Users size={24} className="text-[var(--c-accent)]" />
+              <div className="w-12 h-12 bg-(--c-primary-dim) rounded-full flex items-center justify-center">
+                <Users size={24} className="text-(--c-accent)" />
               </div>
               <div>
                 <h3 className="text-lg font-bold text-white">Characters</h3>
-                <p className="text-sm text-[var(--c-muted)]">{personas.length} personas available</p>
+                <p className="text-sm text-(--c-muted)">{personas.length} personas available</p>
               </div>
             </div>
-            <ChevronRight size={24} className="text-[var(--c-muted)]" />
+            <ChevronRight size={24} className="text-(--c-muted)" />
           </div>
         </Link>
 
         {/* Relationships - Compact on mobile */}
         {profile?.relationships && profile.relationships.length > 0 && (
-          <div className="bg-[var(--c-secondary)] border border-[var(--c-border)] rounded-3xl p-5">
+          <div className="bg-(--c-secondary) border border-(--c-border) rounded-3xl p-5">
             <h3 className="text-lg font-bold text-white mb-3 flex items-center gap-2">
-              <Heart className="text-[var(--c-accent)]" size={20} />
+              <Heart className="text-(--c-accent)" size={20} />
               Relationships
             </h3>
 
@@ -187,8 +187,8 @@ export default function ProfilePage() {
               {profile.relationships.map((rel, idx) => {
                 const image = getPersonaImage(rel.persona_name);
                 return (
-                  <div key={idx} className="flex flex-col items-center flex-shrink-0 min-w-[72px]">
-                    <div className="w-14 h-14 rounded-full overflow-hidden bg-[var(--c-primary)] mb-1">
+                  <div key={idx} className="flex flex-col items-center shrink-0 min-w-18">
+                    <div className="w-14 h-14 rounded-full overflow-hidden bg-(--c-primary) mb-1">
                       {image ? (
                         <Image src={image} alt={rel.persona_name} width={56} height={56} className="object-cover w-full h-full" />
                       ) : (
@@ -198,7 +198,7 @@ export default function ProfilePage() {
                       )}
                     </div>
                     <span className="text-xs text-white font-medium">{rel.persona_name}</span>
-                    <span className="text-[10px] text-[var(--c-accent)]">Lv.{rel.intimacy_level}</span>
+                    <span className="text-[10px] text-(--c-accent)">Lv.{rel.intimacy_level}</span>
                   </div>
                 );
               })}
@@ -209,8 +209,8 @@ export default function ProfilePage() {
               {profile.relationships.map((rel, idx) => {
                 const image = getPersonaImage(rel.persona_name);
                 return (
-                  <div key={idx} className="bg-[var(--c-bg)] border border-[var(--c-border)] rounded-2xl p-4 flex items-center gap-4">
-                    <div className="w-12 h-12 rounded-full overflow-hidden flex-shrink-0 bg-[var(--c-primary)]">
+                  <div key={idx} className="bg-(--c-bg) border border-(--c-border) rounded-2xl p-4 flex items-center gap-4">
+                    <div className="w-12 h-12 rounded-full overflow-hidden shrink-0 bg-(--c-primary)">
                       {image ? (
                         <Image src={image} alt={rel.persona_name} width={48} height={48} className="object-cover w-full h-full" />
                       ) : (
@@ -221,10 +221,10 @@ export default function ProfilePage() {
                     </div>
                     <div className="flex-1">
                       <div className="font-semibold text-white">{rel.persona_name}</div>
-                      <div className="text-sm text-[var(--c-muted)] capitalize">{rel.status}</div>
+                      <div className="text-sm text-(--c-muted) capitalize">{rel.status}</div>
                     </div>
                     <div className="text-right">
-                      <div className="text-[var(--c-accent)] font-semibold">Level {rel.intimacy_level}</div>
+                      <div className="text-(--c-accent) font-semibold">Level {rel.intimacy_level}</div>
                     </div>
                   </div>
                 );

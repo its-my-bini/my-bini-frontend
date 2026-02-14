@@ -76,11 +76,11 @@ export default function WalletPage() {
     return (
       <AppLayout>
         <div className="flex flex-col items-center justify-center min-h-full p-8">
-          <Wallet className="w-16 h-16 text-[var(--c-muted-dim)] mb-4" />
+          <Wallet className="w-16 h-16 text-(--c-muted-dim) mb-4" />
           <h2 className="text-2xl font-bold text-white mb-2">
             Connect Your Wallet
           </h2>
-          <p className="text-[var(--c-muted)] mb-8 text-center">
+          <p className="text-(--c-muted) mb-8 text-center">
             Connect your wallet to view balance and manage tokens
           </p>
           <ConnectButton />
@@ -101,7 +101,7 @@ export default function WalletPage() {
         {/* Balance Cards - Side by Side */}
         <div className="grid grid-cols-2 gap-3">
           {/* MON Balance */}
-          <div className="bg-[var(--c-primary-hover)] rounded-2xl p-4 text-white">
+          <div className="bg-(--c-primary-hover) rounded-2xl p-4 text-white">
             <div className="flex items-center gap-1 mb-2">
               <Wallet size={16} />
               <span className="text-xs opacity-80">MON Balance</span>
@@ -124,10 +124,10 @@ export default function WalletPage() {
           </div>
 
           {/* Token Balance */}
-          <div className="bg-[var(--c-secondary)] border border-[var(--c-border)] rounded-2xl p-4 text-white">
+          <div className="bg-(--c-secondary) border border-(--c-border) rounded-2xl p-4 text-white">
             <div className="flex items-center gap-1 mb-2">
-              <Wallet size={16} className="text-[var(--c-accent)]" />
-              <span className="text-xs text-[var(--c-muted)]">
+              <Wallet size={16} className="text-(--c-accent)" />
+              <span className="text-xs text-(--c-muted)">
                 Token Balance
               </span>
             </div>
@@ -136,7 +136,7 @@ export default function WalletPage() {
             ) : (
               <>
                 <div className="text-3xl font-bold">{tokenBalance}</div>
-                <div className="text-xs text-[var(--c-muted)] mt-0.5">
+                <div className="text-xs text-(--c-muted) mt-0.5">
                   TOKENS
                 </div>
               </>
@@ -149,15 +149,15 @@ export default function WalletPage() {
           {/* Daily Reward */}
           <button
             onClick={handleClaimDaily}
-            className="bg-[var(--c-primary)] hover:bg-[var(--c-primary-hover)] text-white font-semibold py-3 px-4 rounded-xl transition flex items-center justify-center gap-2"
+            className="bg-(--c-primary) hover:bg-(--c-primary-hover) text-white font-semibold py-3 px-4 rounded-xl transition flex items-center justify-center gap-2"
           >
             <Clock size={18} />
             <span className="text-sm">Daily Reward</span>
           </button>
 
           {/* Stats Toggle (optional) */}
-          <div className="bg-[var(--c-secondary)] border border-[var(--c-border)] rounded-xl p-3 text-center">
-            <div className="text-xs text-[var(--c-muted)]">Total Earned</div>
+          <div className="bg-(--c-secondary) border border-(--c-border) rounded-xl p-3 text-center">
+            <div className="text-xs text-(--c-muted)">Total Earned</div>
             <div className="text-xl font-bold text-white">
               {stats?.totalEarned?.toString() || "0"}
             </div>
@@ -165,26 +165,26 @@ export default function WalletPage() {
         </div>
 
         {/* Deposit Section */}
-        <div className="bg-[var(--c-secondary)] border border-[var(--c-border)] rounded-2xl p-4">
+        <div className="bg-(--c-secondary) border border-(--c-border) rounded-2xl p-4">
           <h2 className="text-lg font-bold mb-3 text-white">Top Up Balance</h2>
           <DepositModal />
         </div>
 
         {/* Compact Stats */}
         <div className="grid grid-cols-2 gap-3">
-          <div className="bg-[var(--c-bg)] border border-[var(--c-border)] rounded-xl p-3 text-center">
+          <div className="bg-(--c-bg) border border-(--c-border) rounded-xl p-3 text-center">
             <div className="flex items-center justify-center gap-1 mb-1">
               <ArrowUpRight size={14} className="text-green-400" />
-              <span className="text-xs text-[var(--c-muted)]">Earned</span>
+              <span className="text-xs text-(--c-muted)">Earned</span>
             </div>
             <div className="text-lg font-bold text-white">
               {stats?.totalEarned?.toString() || "0"}
             </div>
           </div>
-          <div className="bg-[var(--c-bg)] border border-[var(--c-border)] rounded-xl p-3 text-center">
+          <div className="bg-(--c-bg) border border-(--c-border) rounded-xl p-3 text-center">
             <div className="flex items-center justify-center gap-1 mb-1">
               <ArrowDownLeft size={14} className="text-red-400" />
-              <span className="text-xs text-[var(--c-muted)]">Spent</span>
+              <span className="text-xs text-(--c-muted)">Spent</span>
             </div>
             <div className="text-lg font-bold text-white">
               {stats?.totalSpent?.toString() || "0"}

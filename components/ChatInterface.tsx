@@ -411,7 +411,7 @@ export default function ChatInterface({ personaId }: ChatInterfaceProps) {
               {/* Start Chat Button */}
               <button
                 onClick={() => setShowProfileModal(false)}
-                className="w-full bg-[var(--c-primary)] hover:bg-[var(--c-primary-hover)] text-white font-semibold py-3 rounded-xl transition"
+                className="w-full bg-(--c-primary) hover:bg-(--c-primary-hover) text-white font-semibold py-3 rounded-xl transition"
               >
                 Start Chatting
               </button>
@@ -441,8 +441,8 @@ export default function ChatInterface({ personaId }: ChatInterfaceProps) {
                   className={`max-w-[80%] md:max-w-[60%] px-4 py-2 rounded-2xl shadow-sm text-[15px] leading-relaxed relative group
                   ${
                     msg.role === "user"
-                      ? "bg-[var(--c-primary)] text-white rounded-tr-none"
-                      : "bg-[var(--c-secondary)] text-white rounded-tl-none border border-[var(--c-border)]"
+                      ? "bg-(--c-primary) text-white rounded-tr-none"
+                      : "bg-(--c-secondary) text-white rounded-tl-none border border-(--c-border)"
                   }`}
                 >
                   {msg.content}
@@ -466,7 +466,7 @@ export default function ChatInterface({ personaId }: ChatInterfaceProps) {
               className="flex justify-start items-end gap-2"
             >
               {/* Avatar */}
-              <div className="w-8 h-8 rounded-full overflow-hidden flex-shrink-0 bg-[var(--c-primary)]">
+              <div className="w-8 h-8 rounded-full overflow-hidden shrink-0 bg-(--c-primary)">
                 {getPersonaImage(personaId) ? (
                   <Image
                     src={getPersonaImage(personaId)!}
@@ -481,10 +481,10 @@ export default function ChatInterface({ personaId }: ChatInterfaceProps) {
                   </div>
                 )}
               </div>
-              <div className="bg-[var(--c-secondary)] px-4 py-3 rounded-2xl rounded-tl-none border border-[var(--c-border)] flex gap-1">
-                <span className="w-2 h-2 bg-[var(--c-accent)] rounded-full animate-bounce"></span>
-                <span className="w-2 h-2 bg-[var(--c-accent)] rounded-full animate-bounce delay-75"></span>
-                <span className="w-2 h-2 bg-[var(--c-accent)] rounded-full animate-bounce delay-150"></span>
+              <div className="bg-(--c-secondary) px-4 py-3 rounded-2xl rounded-tl-none border border-(--c-border) flex gap-1">
+                <span className="w-2 h-2 bg-(--c-accent) rounded-full animate-bounce"></span>
+                <span className="w-2 h-2 bg-(--c-accent) rounded-full animate-bounce delay-75"></span>
+                <span className="w-2 h-2 bg-(--c-accent) rounded-full animate-bounce delay-150"></span>
               </div>
             </motion.div>
           )}
@@ -494,10 +494,10 @@ export default function ChatInterface({ personaId }: ChatInterfaceProps) {
       </div>
 
       {/* Input Area (Sticky Bottom) */}
-      <div className="absolute bottom-0 w-full bg-[var(--c-secondary-90)] backdrop-blur-md border-t border-(--c-border-light) p-2 md:p-4">
-        <div className="max-w-4xl mx-auto flex items-end gap-2 bg-[var(--c-bg)] p-2 rounded-3xl border border-[var(--c-border)]">
+      <div className="absolute bottom-0 w-full bg-(--c-secondary-90) backdrop-blur-md border-t border-(--c-border-light) p-2 md:p-4">
+        <div className="max-w-4xl mx-auto flex items-end gap-2 bg-(--c-bg) p-2 rounded-3xl border border-(--c-border)">
           <textarea
-            className="flex-1 bg-transparent text-white placeholder-[var(--c-muted-faint)] px-4 py-2 focus:outline-none resize-none max-h-32 min-h-[44px]"
+            className="flex-1 bg-transparent text-white placeholder-(--c-muted-faint) px-4 py-2 focus:outline-none resize-none max-h-32 min-h-11"
             placeholder="Message..."
             rows={1}
             value={input}
@@ -512,7 +512,7 @@ export default function ChatInterface({ personaId }: ChatInterfaceProps) {
           <button
             onClick={sendMessage}
             disabled={!input.trim()}
-            className="w-10 h-10 rounded-full bg-[var(--c-primary)] flex items-center justify-center text-white hover:bg-[var(--c-primary-hover)] transition disabled:opacity-50 disabled:bg-[var(--c-hover-bg)]"
+            className="w-10 h-10 rounded-full bg-(--c-primary) flex items-center justify-center text-white hover:bg-(--c-primary-hover) transition disabled:opacity-50 disabled:bg-(--c-hover-bg)"
           >
             <ArrowUp size={20} strokeWidth={3} />
           </button>

@@ -43,7 +43,7 @@ export default function CharacterPage() {
       <div className="p-4 md:p-8 max-w-4xl mx-auto pb-8">
         {/* Header */}
         <div className="flex items-center gap-3 mb-6">
-          <Link href="/profile" className="text-[var(--c-muted)] hover:text-white transition">
+          <Link href="/profile" className="text-(--c-muted) hover:text-white transition">
             <ArrowLeft size={24} />
           </Link>
           <h1 className="text-2xl font-bold text-white">Characters</h1>
@@ -62,12 +62,12 @@ export default function CharacterPage() {
             return (
               <div
                 key={persona.id}
-                className="bg-[var(--c-bg)] border border-[var(--c-border)] rounded-2xl overflow-hidden"
+                className="bg-(--c-bg) border border-(--c-border) rounded-2xl overflow-hidden"
               >
                 {/* Top: Image + Basic Info */}
                 <div className="flex flex-col md:flex-row">
                   {/* Character Image */}
-                  <div className={`relative w-full md:w-48 h-56 md:h-auto bg-gradient-to-br ${color} flex-shrink-0`}>
+                  <div className={`relative w-full md:w-48 h-56 md:h-auto bg-linear-to-br ${color} shrink-0`}>
                     {image ? (
                       <Image
                         src={image}
@@ -86,19 +86,19 @@ export default function CharacterPage() {
                   <div className="flex-1 p-4 md:p-5">
                     <div className="flex items-center gap-2 mb-2">
                       <h4 className="text-xl font-bold text-white">{persona.name}</h4>
-                      <span className="bg-[var(--c-primary-dim)] text-[var(--c-accent)] text-xs px-2 py-0.5 rounded-full">
+                      <span className="bg-(--c-primary-dim) text-(--c-accent) text-xs px-2 py-0.5 rounded-full">
                         {persona.type}
                       </span>
                     </div>
 
                     {/* Greeting */}
                     {detail && (
-                      <p className="text-sm text-[var(--c-muted)] italic mb-3 leading-relaxed">
+                      <p className="text-sm text-(--c-muted) italic mb-3 leading-relaxed">
                         &ldquo;{detail.greeting}&rdquo;
                       </p>
                     )}
 
-                    <p className="text-sm text-[var(--c-muted-dim)] leading-relaxed mb-3">
+                    <p className="text-sm text-(--c-muted-dim) leading-relaxed mb-3">
                       {persona.description}
                     </p>
 
@@ -113,15 +113,15 @@ export default function CharacterPage() {
 
                     {/* Relationship Status */}
                     {relationship && (
-                      <div className="bg-[var(--c-secondary)] rounded-xl p-3 flex items-center gap-3">
+                      <div className="bg-(--c-secondary) rounded-xl p-3 flex items-center gap-3">
                         <div className="flex-1">
                           <div className="flex justify-between items-center mb-1">
-                            <span className="text-xs text-[var(--c-muted)] capitalize">{relationship.status}</span>
-                            <span className="text-xs font-semibold text-[var(--c-accent)]">Lv. {relationship.intimacy_level}</span>
+                            <span className="text-xs text-(--c-muted) capitalize">{relationship.status}</span>
+                            <span className="text-xs font-semibold text-(--c-accent)">Lv. {relationship.intimacy_level}</span>
                           </div>
-                          <div className="w-full bg-[var(--c-hover-bg)] rounded-full h-1.5">
+                          <div className="w-full bg-(--c-hover-bg) rounded-full h-1.5">
                             <div
-                              className="bg-gradient-to-r from-[var(--c-primary)] to-[var(--c-accent)] h-1.5 rounded-full transition-all"
+                              className="bg-linear-to-r from-(--c-primary) to-(--c-accent) h-1.5 rounded-full transition-all"
                               style={{ width: `${Math.min(relationship.intimacy_level, 100)}%` }}
                             />
                           </div>
@@ -133,12 +133,12 @@ export default function CharacterPage() {
 
                 {/* Detail Section */}
                 {detail && (
-                  <div className="border-t border-[var(--c-border)] p-4 md:p-5 grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="border-t border-(--c-border) p-4 md:p-5 grid grid-cols-1 md:grid-cols-2 gap-4">
                     {/* Personality */}
                     <DetailSection icon={<Sparkles size={14} />} title="Personality">
                       <div className="flex flex-wrap gap-1.5">
                         {detail.personality.map((trait) => (
-                          <span key={trait} className="bg-[var(--c-primary-dim)] text-[var(--c-accent)] text-xs px-2 py-0.5 rounded-full">
+                          <span key={trait} className="bg-(--c-primary-dim) text-(--c-accent) text-xs px-2 py-0.5 rounded-full">
                             {trait}
                           </span>
                         ))}
@@ -149,7 +149,7 @@ export default function CharacterPage() {
                     <DetailSection icon={<Music size={14} />} title="Hobbies">
                       <div className="flex flex-wrap gap-1.5">
                         {detail.hobbies.map((hobby) => (
-                          <span key={hobby} className="bg-[var(--c-secondary)] text-[var(--c-muted)] text-xs px-2 py-0.5 rounded-full border border-[var(--c-border)]">
+                          <span key={hobby} className="bg-(--c-secondary) text-(--c-muted) text-xs px-2 py-0.5 rounded-full border border-(--c-border)">
                             {hobby}
                           </span>
                         ))}
@@ -158,12 +158,12 @@ export default function CharacterPage() {
 
                     {/* Likes */}
                     <DetailSection icon={<Heart size={14} />} title="Likes">
-                      <p className="text-xs text-[var(--c-muted)]">{detail.likes.join(' · ')}</p>
+                      <p className="text-xs text-(--c-muted)">{detail.likes.join(' · ')}</p>
                     </DetailSection>
 
                     {/* Dislikes */}
                     <DetailSection icon={<Star size={14} />} title="Dislikes">
-                      <p className="text-xs text-[var(--c-muted)]">{detail.dislikes.join(' · ')}</p>
+                      <p className="text-xs text-(--c-muted)">{detail.dislikes.join(' · ')}</p>
                     </DetailSection>
                   </div>
                 )}
@@ -178,8 +178,8 @@ export default function CharacterPage() {
 
 function StatBadge({ label, value }: { label: string; value: string }) {
   return (
-    <div className="bg-[var(--c-secondary)] rounded-lg px-2.5 py-1 text-center">
-      <span className="text-[10px] text-[var(--c-muted-dim)] block">{label}</span>
+    <div className="bg-(--c-secondary) rounded-lg px-2.5 py-1 text-center">
+      <span className="text-[10px] text-(--c-muted-dim) block">{label}</span>
       <span className="text-xs text-white font-medium">{value}</span>
     </div>
   );
@@ -189,7 +189,7 @@ function DetailSection({ icon, title, children }: { icon: React.ReactNode; title
   return (
     <div>
       <div className="flex items-center gap-1.5 mb-2">
-        <span className="text-[var(--c-accent)]">{icon}</span>
+        <span className="text-(--c-accent)">{icon}</span>
         <span className="text-xs font-semibold text-white">{title}</span>
       </div>
       {children}
