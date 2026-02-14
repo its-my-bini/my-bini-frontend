@@ -46,7 +46,6 @@ export function useSocket() {
       // Balance updates
       socket.on('balance:update', (data: { balance: number; timestamp: string }) => {
         queryClient.setQueryData(['balance', address], data.balance);
-        toast.success(`Balance updated: ${data.balance} tokens`);
       });
 
       // System notifications (rewards, errors, etc.)

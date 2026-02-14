@@ -34,7 +34,7 @@ export default function DashboardPage() {
     });
 
   // Fetch user profile - includes relationships with last messages
-  const { data: profile } = useQuery<UserProfile>({
+  const { data: profile, isLoading: isLoadingProfile } = useQuery<UserProfile>({
     queryKey: ["profile", address],
     queryFn: async () => {
       if (!address) return null;
@@ -98,7 +98,8 @@ export default function DashboardPage() {
   const filteredPersonas = useMemo(() => {
     const q = search.trim().toLowerCase();
     let result = personas;
-    
+
+    // Filter first, then sort (prevents "show then reorder" behavior while typing/searching)
     if (q) {
       result = personas.filter((p) => {
         return (
@@ -109,22 +110,28 @@ export default function DashboardPage() {
       });
     }
 
-    // Sort by most recent chat (like WhatsApp)
+    const getActivityIso = (rel?: UserProfile['relationships'][number]) =>
+      rel?.last_message_at || rel?.last_interaction;
+
+    // Sort by latest activity (prefer last_message_at, fallback to last_interaction)
     return [...result].sort((a, b) => {
       const relA = profile?.relationships?.find(
-        (r) => r.persona_name.toLowerCase() === a.name.toLowerCase()
+        (r) => r.persona_name.toLowerCase() === a.name.toLowerCase(),
       );
       const relB = profile?.relationships?.find(
-        (r) => r.persona_name.toLowerCase() === b.name.toLowerCase()
+        (r) => r.persona_name.toLowerCase() === b.name.toLowerCase(),
       );
 
+      const isoA = getActivityIso(relA);
+      const isoB = getActivityIso(relB);
+
       // Personas with chat history come first
-      if (relA?.last_interaction && !relB?.last_interaction) return -1;
-      if (!relA?.last_interaction && relB?.last_interaction) return 1;
+      if (isoA && !isoB) return -1;
+      if (!isoA && isoB) return 1;
 
       // Both have history: sort by most recent
-      if (relA?.last_interaction && relB?.last_interaction) {
-        return new Date(relB.last_interaction).getTime() - new Date(relA.last_interaction).getTime();
+      if (isoA && isoB) {
+        return new Date(isoB).getTime() - new Date(isoA).getTime();
       }
 
       return 0; // Keep original order for those without history
@@ -187,7 +194,7 @@ export default function DashboardPage() {
         </div>
 
         <div className="flex-1 mx-auto w-full overflow-y-auto bg-(--c-secondary)">
-        {isLoadingPersonas ? (
+        {isLoadingPersonas || isLoadingProfile ? (
           <CharacterListSkeleton />
         ) : (
           <div>
@@ -201,7 +208,9 @@ export default function DashboardPage() {
                 ? relationship.last_message
                 : persona.description;
 
-              const timeText = formatLastInteraction(relationship?.last_interaction);
+              const timeText = formatLastInteraction(
+                relationship?.last_message_at || relationship?.last_interaction,
+              );
 
               return (
                 <button

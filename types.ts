@@ -20,12 +20,14 @@ export interface UserProfile extends User {
     selected_at: string;
   }>;
   relationships: Array<{
+    persona_id?: string;
     persona_name: string;
     persona_type: string;
     intimacy_level: number;
     status: string;
-    last_interaction: string;
+    last_interaction?: string;
     last_message?: string;
+    last_message_at?: string;
   }>;
 }
 
