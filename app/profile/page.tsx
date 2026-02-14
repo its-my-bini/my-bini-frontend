@@ -45,12 +45,12 @@ export default function ProfilePage() {
 
   return (
     <AppLayout>
-      <div className="p-4 md:p-8 max-w-4xl mx-auto space-y-8">
+      <div className="p-4 md:p-8 max-w-full bg-(--c-secondary)  mx-auto space-y-4">
         {/* Profile Card */}
-        <div className="bg-(--c-secondary) border border-(--c-border) rounded-3xl p-6 md:p-8">
+        <div className="bg-(--c-secondary) border border-(--c-border) rounded-xl p-6 md:p-8">
           <div className="flex items-center gap-4 mb-6">
             <div className="w-16 h-16 bg-(--c-primary) rounded-full flex items-center justify-center">
-              <User size={32} className="text-white" />
+              <User size={32} className="text-(--c-on-primary)" />
             </div>
             <div>
               <h2 className="text-2xl font-bold text-white">Profile</h2>
@@ -80,12 +80,12 @@ export default function ProfilePage() {
         </div>
 
         {/* Theme Selector */}
-        <div className="bg-(--c-secondary) border border-(--c-border) rounded-3xl p-5">
+        <div className="bg-(--c-secondary) border border-(--c-border) rounded-xl p-5">
           <div className="flex items-center gap-3 mb-4">
             <Palette size={20} className="text-(--c-accent)" />
             <h3 className="text-lg font-bold text-white">Theme</h3>
           </div>
-          <div className="grid grid-cols-4 gap-3">
+          <div className="grid grid-cols-4 gap-4">
             {(Object.keys(THEMES) as ThemeKey[]).map((key) => {
               const t = THEMES[key];
               const isActive = theme.key === key;
@@ -93,16 +93,18 @@ export default function ProfilePage() {
                 <button
                   key={key}
                   onClick={() => setTheme(key)}
-                  className={`flex flex-col items-center gap-2 p-3 rounded-2xl border-2 transition ${
-                    isActive
-                      ? 'border-(--c-primary) bg-(--c-primary-dim)'
-                      : 'border-transparent hover:border-(--c-border)'
-                  }`}
+                  className="flex flex-col items-center gap-2 cursor-pointer"
                 >
                   <div
-                    className="w-10 h-10 rounded-full border-2 border-white/20"
-                    style={{ background: `linear-gradient(135deg, ${t.primary}, ${t.accent})` }}
-                  />
+                    className={`w-12 h-12 rounded-full flex items-center justify-center transition ${
+                      isActive ? 'ring-2 ring-(--c-primary) ring-offset-2 ring-offset-(--c-secondary)' : ''
+                    }`}
+                  >
+                    <div
+                      className="w-10 h-10 rounded-full"
+                      style={{ background: `linear-gradient(135deg, ${t.primary}, ${t.accent})` }}
+                    />
+                  </div>
                   <span className="text-xs text-white font-medium">{t.label}</span>
                 </button>
               );
@@ -111,12 +113,12 @@ export default function ProfilePage() {
         </div>
 
         {/* Background Pattern Selector */}
-        <div className="bg-(--c-secondary) border border-(--c-border) rounded-3xl p-5">
+        <div className="bg-(--c-secondary) border border-(--c-border) rounded-xl p-5">
           <div className="flex items-center gap-3 mb-4">
             <ImageIcon size={20} className="text-(--c-accent)" />
             <h3 className="text-lg font-bold text-white">Background</h3>
           </div>
-          <div className="grid grid-cols-4 gap-3">
+          <div className="grid grid-cols-4 gap-4">
             {(Object.keys(BG_PATTERNS) as BgPatternKey[]).map((key) => {
               const p = BG_PATTERNS[key];
               const isActive = bgPattern.key === key;
@@ -124,32 +126,34 @@ export default function ProfilePage() {
                 <button
                   key={key}
                   onClick={() => setBgPattern(key)}
-                  className={`flex flex-col items-center gap-2 p-3 rounded-2xl border-2 transition ${
-                    isActive
-                      ? 'border-(--c-primary) bg-(--c-primary-dim)'
-                      : 'border-transparent hover:border-(--c-border)'
-                  }`}
+                  className="flex flex-col items-center gap-2 cursor-pointer"
                 >
                   <div
-                    className="w-10 h-10 rounded-lg border border-white/10 overflow-hidden flex items-center justify-center"
-                    style={{ backgroundColor: 'var(--c-bg)' }}
+                    className={`w-12 h-12 rounded-full flex items-center justify-center transition ${
+                      isActive ? 'ring-2 ring-(--c-primary) ring-offset-2 ring-offset-(--c-secondary)' : ''
+                    }`}
                   >
-                    {p.src ? (
-                      <div
-                        className="w-full h-full"
-                        style={{
-                          backgroundColor: 'var(--c-svg-fill)',
-                          maskImage: `url('${p.src}')`,
-                          maskRepeat: 'repeat',
-                          maskSize: key === 'food' ? '40px 40px' : key === 'bubbles' ? '30px 30px' : '24px 24px',
-                          WebkitMaskImage: `url('${p.src}')`,
-                          WebkitMaskRepeat: 'repeat',
-                          WebkitMaskSize: key === 'food' ? '40px 40px' : key === 'bubbles' ? '30px 30px' : '24px 24px',
-                        }}
-                      />
-                    ) : (
-                      <span className="text-(--c-muted-dim) text-lg">∅</span>
-                    )}
+                    <div
+                      className="w-10 h-10 rounded-full overflow-hidden flex items-center justify-center"
+                      style={{ backgroundColor: 'var(--c-bg)' }}
+                    >
+                      {p.src ? (
+                        <div
+                          className="w-full h-full"
+                          style={{
+                            backgroundColor: 'var(--c-svg-fill)',
+                            maskImage: `url('${p.src}')`,
+                            maskRepeat: 'repeat',
+                            maskSize: key === 'food' ? '40px 40px' : key === 'bubbles' ? '30px 30px' : '24px 24px',
+                            WebkitMaskImage: `url('${p.src}')`,
+                            WebkitMaskRepeat: 'repeat',
+                            WebkitMaskSize: key === 'food' ? '40px 40px' : key === 'bubbles' ? '30px 30px' : '24px 24px',
+                          }}
+                        />
+                      ) : (
+                        <span className="text-(--c-muted-dim) text-lg">∅</span>
+                      )}
+                    </div>
                   </div>
                   <span className="text-xs text-white font-medium">{p.label}</span>
                 </button>
@@ -159,8 +163,8 @@ export default function ProfilePage() {
         </div>
 
         {/* Characters Link */}
-        <Link href="/profile/character">
-          <div className="bg-(--c-secondary) border border-(--c-border) rounded-3xl p-5 flex items-center justify-between hover:border-(--c-border-accent) transition cursor-pointer">
+        <Link href="/profile/character" className="block">
+          <div className="bg-(--c-secondary) border border-(--c-border) rounded-xl p-5 flex items-center justify-between hover:border-(--c-border-accent) transition cursor-pointer">
             <div className="flex items-center gap-4">
               <div className="w-12 h-12 bg-(--c-primary-dim) rounded-full flex items-center justify-center">
                 <Users size={24} className="text-(--c-accent)" />
@@ -176,7 +180,7 @@ export default function ProfilePage() {
 
         {/* Relationships - Compact on mobile */}
         {profile?.relationships && profile.relationships.length > 0 && (
-          <div className="bg-(--c-secondary) border border-(--c-border) rounded-3xl p-5">
+          <div className="bg-(--c-secondary) border border-(--c-border) rounded-xl p-5">
             <h3 className="text-lg font-bold text-white mb-3 flex items-center gap-2">
               <Heart className="text-(--c-accent)" size={20} />
               Relationships

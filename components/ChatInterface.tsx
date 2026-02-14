@@ -6,6 +6,7 @@ import { useConnection } from "wagmi";
 import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "sonner";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
+import type { UserProfile } from "@/types";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import type { Persona } from "@/types";
@@ -61,6 +62,27 @@ export default function ChatInterface({ personaId }: ChatInterfaceProps) {
     },
     staleTime: 1000 * 60 * 5, // Persona data rarely changes
   });
+
+  // Fetch user profile for relationship stats
+  const { data: userProfile } = useQuery<UserProfile>({
+    queryKey: ["profile", address],
+    queryFn: async () => {
+      if (!address) return null;
+      const res = await fetch(`${API_URL}/user/profile`, {
+        headers: { "x-wallet-address": address },
+      });
+      if (!res.ok) return null;
+      const data = await res.json();
+      return data.profile;
+    },
+    enabled: !!address,
+    staleTime: 1000 * 60,
+  });
+
+  // Get relationship for current persona
+  const relationship = userProfile?.relationships?.find(
+    (r) => r.persona_name.toLowerCase() === persona?.name?.toLowerCase()
+  );
 
   // Track if user is actively sending to prevent history overwriting local messages
   const isSendingRef = useRef(false);
@@ -392,7 +414,7 @@ export default function ChatInterface({ personaId }: ChatInterfaceProps) {
                       className="object-cover w-full h-full"
                     />
                   ) : (
-                    <Heart size={48} className="text-white" fill="currentColor" />
+                    <Heart size={48} className="text-(--c-on-primary)" fill="currentColor" />
                   )}
                 </div>
                 <h2 className="text-3xl font-bold text-white mb-1">
@@ -401,19 +423,28 @@ export default function ChatInterface({ personaId }: ChatInterfaceProps) {
                 <p className="text-(--c-accent) font-medium">{persona.type}</p>
               </div>
 
-              {/* Description */}
-              <div className="bg-(--c-bg) border border-(--c-border) rounded-2xl p-4 mb-6">
-                <p className="text-(--c-text-light) text-center leading-relaxed">
-                  {persona.description}
-                </p>
+              {/* Stats */}
+              <div className="bg-(--c-bg) rounded-2xl p-4 mb-6 space-y-3">
+                <div className="flex justify-between items-center">
+                  <span className="text-(--c-muted)">Level</span>
+                  <span className="text-white font-semibold">{relationship?.intimacy_level || 1}</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-(--c-muted)">Status</span>
+                  <span className="text-(--c-accent) font-medium capitalize">{relationship?.status || 'Stranger'}</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-(--c-muted)">Messages</span>
+                  <span className="text-white font-semibold">{messages.length}</span>
+                </div>
               </div>
 
-              {/* Start Chat Button */}
+              {/* Close Button */}
               <button
                 onClick={() => setShowProfileModal(false)}
-                className="w-full bg-(--c-primary) hover:bg-(--c-primary-hover) text-white font-semibold py-3 rounded-xl transition"
+                className="w-full bg-(--c-primary) hover:bg-(--c-primary-hover) text-(--c-on-primary) font-semibold py-3 rounded-xl transition"
               >
-                Start Chatting
+                Continue Chat
               </button>
             </motion.div>
           </motion.div>
@@ -441,8 +472,8 @@ export default function ChatInterface({ personaId }: ChatInterfaceProps) {
                   className={`max-w-[80%] md:max-w-[60%] px-4 py-2 rounded-2xl shadow-sm text-[15px] leading-relaxed relative group
                   ${
                     msg.role === "user"
-                      ? "bg-(--c-primary) text-white rounded-tr-none"
-                      : "bg-(--c-secondary) text-white rounded-tl-none border border-(--c-border)"
+                      ? "bg-(--c-primary) text-(--c-on-primary) rounded-tr-none"
+                      : "bg-(--c-secondary) text-white rounded-tl-none"
                   }`}
                 >
                   {msg.content}
@@ -477,11 +508,11 @@ export default function ChatInterface({ personaId }: ChatInterfaceProps) {
                   />
                 ) : (
                   <div className="flex items-center justify-center w-full h-full">
-                    <Heart size={14} className="text-white" fill="currentColor" />
+                    <Heart size={14} className="text-(--c-on-primary)" fill="currentColor" />
                   </div>
                 )}
               </div>
-              <div className="bg-(--c-secondary) px-4 py-3 rounded-2xl rounded-tl-none border border-(--c-border) flex gap-1">
+              <div className="bg-(--c-secondary) px-4 py-3 rounded-2xl rounded-tl-none flex gap-1">
                 <span className="w-2 h-2 bg-(--c-accent) rounded-full animate-bounce"></span>
                 <span className="w-2 h-2 bg-(--c-accent) rounded-full animate-bounce delay-75"></span>
                 <span className="w-2 h-2 bg-(--c-accent) rounded-full animate-bounce delay-150"></span>
@@ -512,7 +543,7 @@ export default function ChatInterface({ personaId }: ChatInterfaceProps) {
           <button
             onClick={sendMessage}
             disabled={!input.trim()}
-            className="w-10 h-10 rounded-full bg-(--c-primary) flex items-center justify-center text-white hover:bg-(--c-primary-hover) transition disabled:opacity-50 disabled:bg-(--c-hover-bg)"
+            className="w-10 h-10 rounded-full bg-(--c-primary) flex items-center justify-center text-(--c-on-primary) hover:bg-(--c-primary-hover) transition disabled:opacity-50 disabled:bg-(--c-hover-bg)"
           >
             <ArrowUp size={20} strokeWidth={3} />
           </button>

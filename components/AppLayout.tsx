@@ -4,7 +4,6 @@ import { MessageCircle, Wallet, User } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import Image from 'next/image';
-import { ConnectButton } from '@rainbow-me/rainbowkit';
 import { useTheme } from '@/lib/theme';
 import { useSocket } from '@/hooks/useSocket';
 
@@ -23,7 +22,6 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
             <Image src="/my-bini.png" alt="My Bini" width={80} height={80} className="rounded-lg" />
             <h1 className="font-bold text-xl">My Bini</h1>
           </div>
-          <ConnectButton accountStatus="avatar" chainStatus="none" showBalance={false} />
         </div>
 
         <div className="flex-1 overflow-y-auto py-2">
@@ -42,7 +40,6 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
               <Image src="/my-bini-spalsh.png" alt="My Bini" width={28} height={28} className="rounded-lg" />
               <span className="font-bold">My Bini</span>
             </div>
-            <ConnectButton accountStatus="avatar" chainStatus="none" showBalance={false} />
           </header>
         )}
 
@@ -69,7 +66,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
 
         {/* MOBILE BOTTOM NAV (Hidden on Desktop, hidden in chat) */}
         {!isInChat && (
-          <nav className="md:hidden h-16 bg-(--c-secondary)er-t border-(--c-border-light) flex items-center justify-around shrink-0 z-10 pb-safe">
+          <nav className="md:hidden h-16 bg-(--c-secondary) border-t border-(--c-border-light) flex items-center justify-around shrink-0 z-10 pb-safe">
             <MobileNavItem href="/dashboard" icon={<MessageCircle />} label="Chats" />
             <MobileNavItem href="/wallet" icon={<Wallet />} label="Wallet" />
             <MobileNavItem href="/profile" icon={<User />} label="Settings" />

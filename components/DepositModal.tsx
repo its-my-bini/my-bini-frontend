@@ -29,9 +29,8 @@ export default function DepositModal() {
   };
 
   return (
-    <div className="bg-(--c-secondary) rounded-2xl p-6 border border-(--c-border)">
-      <h3 className="text-lg font-semibold mb-1 text-white">Top Up Tokens</h3>
-      <p className="text-xs text-(--c-muted) mb-4">1 MON = {TOKENS_PER_MON} Tokens</p>
+    <div className="bg-(--c-secondary) rounded-2xl p-6 ">
+      <p className="text-sm text-(--c-muted) mb-4">1 MON = {TOKENS_PER_MON} Tokens</p>
 
       <div className="space-y-4">
         {/* Package Options */}
@@ -43,13 +42,13 @@ export default function DepositModal() {
                 key={p.tokens}
                 onClick={() => setSelected(idx)}
                 disabled={isBusy}
-                className={`flex flex-col items-center gap-1 p-4 rounded-2xl border-2 transition ${
+                className={`flex flex-col items-center gap-1 p-4 rounded-2xl border transition cursor-pointer ${
                   isActive
                     ? 'border-(--c-primary) bg-(--c-primary-dim)'
                     : 'border-(--c-border) bg-(--c-bg) hover:border-(--c-border-accent)'
                 } disabled:opacity-50`}
               >
-                <Coins size={20} className="text-(--c-accent)" />
+                <Coins size={20} className="text-(--c-accent) hidden md:block" />
                 <span className="text-lg font-bold text-white">{p.tokens}</span>
                 <span className="text-[10px] text-(--c-muted)">tokens</span>
                 <span className="text-xs font-semibold text-(--c-accent) mt-1">{p.mon} MON</span>
@@ -62,7 +61,7 @@ export default function DepositModal() {
         <button
           onClick={handleDeposit}
           disabled={selected === null || isBusy}
-          className="w-full bg-(--c-primary) hover:bg-(--c-primary-hover) disabled:bg-(--c-hover-bg) disabled:opacity-50 text-white font-semibold py-3 rounded-xl transition flex items-center justify-center gap-2"
+          className="w-full bg-(--c-primary) hover:bg-(--c-primary-hover) disabled:bg-(--c-secondary-light) disabled:text-(--c-muted) text-(--c-on-primary) font-semibold py-3 rounded-xl transition flex items-center justify-center gap-2"
         >
           {isBusy ? (
             <>
