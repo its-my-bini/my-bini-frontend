@@ -1,0 +1,175 @@
+"use client";
+
+import { AppLayout } from "@/components/AppLayout";
+import { useConnection } from "wagmi";
+import { useQuery } from "@tanstack/react-query";
+import { useRouter } from "next/navigation";
+import { Heart, MessageCircle, ArrowRight } from "lucide-react";
+import Image from "next/image";
+import type { Persona, UserProfile } from "@/types";
+import { ConnectButton } from "@rainbow-me/rainbowkit";
+import { getPersonaImage } from "@/lib/persona-images";
+import { CharacterListSkeleton } from "@/components/Skeleton";
+
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
+
+// Default personas so the list is never empty
+const DEFAULT_PERSONAS: Persona[] = [
+  { id: "luna", name: "Luna", type: "sweet", description: "A warm and caring companion who loves to make you smile." },
+  { id: "mia", name: "Mia", type: "tsundere", description: "Don't get the wrong idea! I'm just being nice..." },
+  { id: "aiko", name: "Aiko", type: "playful", description: "Life is more fun with a little mischief!" },
+];
+
+export default function DashboardPage() {
+  const { address, isConnected } = useConnection();
+  const router = useRouter();
+
+  // Fetch available personas (fallback to defaults if API fails)
+  const { data: personas = DEFAULT_PERSONAS, isLoading: isLoadingPersonas } = useQuery<Persona[]>({
+    queryKey: ["personas"],
+    queryFn: async () => {
+      const res = await fetch(`${API_URL}/personas`);
+      if (!res.ok) throw new Error("Failed to fetch personas");
+      const data = await res.json();
+      const list = data.personas || [];
+      return list.length > 0 ? list : DEFAULT_PERSONAS;
+    },
+  });
+
+  // Fetch user profile - includes relationships with last messages
+  const { data: profile } = useQuery<UserProfile>({
+    queryKey: ["profile", address],
+    queryFn: async () => {
+      if (!address) return null;
+      const res = await fetch(`${API_URL}/user/profile`, {
+        headers: { "x-wallet-address": address },
+      });
+      if (!res.ok) return null;
+      const data = await res.json();
+      console.log("Profile with relationships:", data.profile);
+      return data.profile;
+    },
+    enabled: !!address,
+    refetchInterval: 10000, // Auto-refresh every 10s to get latest messages
+  });
+
+  const handleOpenChat = async (personaId: string) => {
+    if (!isConnected || !address) return;
+
+    // Select persona via API before opening chat
+    try {
+      await fetch(`${API_URL}/user/select-persona`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-wallet-address': address,
+        },
+        body: JSON.stringify({ persona_id: personaId }),
+      });
+    } catch {
+      // Continue even if select fails — user might already have it selected
+    }
+
+    router.push(`/dashboard/chat/${personaId}`);
+  };
+
+  if (!isConnected) {
+    return (
+      <AppLayout>
+        <div className="flex flex-col items-center justify-center min-h-full p-8">
+          <MessageCircle className="w-16 h-16 text-[var(--c-muted-dim)] mb-4" />
+          <h2 className="text-2xl font-bold text-white mb-2">
+            Connect Your Wallet
+          </h2>
+          <p className="text-[var(--c-muted)] mb-8 text-center">
+            Connect your wallet to start chatting with your AI girlfriends
+          </p>
+          <ConnectButton />
+        </div>
+      </AppLayout>
+    );
+  }
+
+  return (
+    <AppLayout>
+      <div className="p-4 md:p-8 max-w-4xl mx-auto">
+        <div className="mb-6">
+          <h1 className="text-3xl font-bold text-white mb-2">Your Chats</h1>
+          <p className="text-[var(--c-muted)]">
+            Select a girlfriend to start chatting
+          </p>
+        </div>
+
+        {isLoadingPersonas ? (
+          <CharacterListSkeleton />
+        ) : (
+        <div className="space-y-3">
+          {personas.map((persona) => {
+            const relationship = profile?.relationships?.find(
+              (r) => r.persona_name.toLowerCase() === persona.name.toLowerCase()
+            );
+
+            return (
+              <button
+                key={persona.id}
+                onClick={() => handleOpenChat(persona.id)}
+                className="w-full bg-[var(--c-secondary)] border border-[var(--c-border)] hover:border-[var(--c-primary)] hover:bg-[var(--c-secondary-light)] cursor-pointer rounded-2xl p-4 transition text-left"
+              >
+                <div className="flex items-center gap-3">
+                  {/* Avatar */}
+                  <div className="w-14 h-14 rounded-full flex items-center justify-center flex-shrink-0 overflow-hidden bg-[var(--c-primary)]">
+                    {getPersonaImage(persona.id) ? (
+                      <Image
+                        src={getPersonaImage(persona.id)!}
+                        alt={persona.name}
+                        width={56}
+                        height={56}
+                        className="object-cover w-full h-full"
+                      />
+                    ) : (
+                      <Heart
+                        size={28}
+                        className="text-white"
+                        fill="currentColor"
+                      />
+                    )}
+                  </div>
+
+                  {/* Info */}
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2 mb-1">
+                      <h3 className="text-lg font-bold text-white">
+                        {persona.name}
+                      </h3>
+                      <span className="text-xs text-[var(--c-accent)] bg-[var(--c-primary-dim)] px-2 py-0.5 rounded-full">
+                        {persona.type}
+                      </span>
+                    </div>
+                    <p className="text-sm text-[var(--c-muted)] truncate">
+                      {relationship
+                        ? `Level ${relationship.intimacy_level} · ${relationship.status}`
+                        : persona.description}
+                    </p>
+                  </div>
+
+                  {/* Arrow */}
+                  <div className="flex flex-col items-end gap-1 flex-shrink-0">
+                    <ArrowRight size={20} className="text-[var(--c-muted)]" />
+                  </div>
+                </div>
+              </button>
+            );
+          })}
+        </div>
+        )}
+
+        {!isLoadingPersonas && personas.length === 0 && (
+          <div className="text-center py-12">
+            <MessageCircle className="w-16 h-16 text-[var(--c-muted-faint)] mx-auto mb-4" />
+            <p className="text-[var(--c-muted)]">No personas available</p>
+          </div>
+        )}
+      </div>
+    </AppLayout>
+  );
+}

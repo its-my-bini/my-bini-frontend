@@ -1,0 +1,68 @@
+@import "tailwindcss";
+
+:root {
+  --c-bg: #1a0a14;
+  --c-secondary: #2d1525;
+  --c-secondary-90: rgba(45,21,37,0.9);
+  --c-secondary-80: rgba(45,21,37,0.8);
+  --c-secondary-50: rgba(45,21,37,0.5);
+  --c-secondary-light: #3d2133;
+  --c-primary: #ec4899;
+  --c-primary-hover: #db2777;
+  --c-accent: #f472b6;
+  --c-muted: rgba(249,168,212,0.8);
+  --c-muted-dim: rgba(249,168,212,0.6);
+  --c-muted-faint: rgba(249,168,212,0.5);
+  --c-border: rgba(131,24,67,0.6);
+  --c-border-light: rgba(131,24,67,0.5);
+  --c-border-accent: rgba(236,72,153,0.6);
+  --c-hover-bg: rgba(131,24,67,0.5);
+  --c-surface: rgba(131,24,67,0.4);
+  --c-primary-dim: rgba(236,72,153,0.25);
+  --c-primary-faint: rgba(236,72,153,0.15);
+  --c-text-light: #fce7f3;
+  --c-svg-fill: #3d1a2e;
+}
+
+body {
+  background-color: var(--c-bg);
+  color: #fdf2f8;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  overflow: hidden;
+}
+
+/* Telegram-like Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 3px;
+}
+
+/* Tailwind animation delays */
+@keyframes bounce {
+  0%, 100% {
+    transform: translateY(-25%);
+    animation-timing-function: cubic-bezier(0.8, 0, 1, 1);
+  }
+  50% {
+    transform: translateY(0);
+    animation-timing-function: cubic-bezier(0, 0, 0.2, 1);
+  }
+}
+
+.animate-bounce {
+  animation: bounce 1s infinite;
+}
+
+.delay-75 {
+  animation-delay: 75ms;
+}
+
+.delay-150 {
+  animation-delay: 150ms;
+}
