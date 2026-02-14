@@ -22,7 +22,7 @@ interface AuthContextType {
   isAuthenticated: boolean;
   isAuthenticating: boolean;
   user: AuthUser | null;
-  login: (name?: string, timezone?: string) => Promise<boolean>;
+  login: (name?: string) => Promise<boolean>;
   logout: () => void;
   address?: string;
   isConnected: boolean;
@@ -73,7 +73,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   // Login with signature
-  const login = useCallback(async (name?: string, userTimezone?: string): Promise<boolean> => {
+  const login = useCallback(async (name?: string): Promise<boolean> => {
     if (!address) return false;
 
     setIsAuthenticating(true);
@@ -82,7 +82,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const message = generateMessage(address);
       const signature = await signMessageAsync({ message });
 
-      const timezone = userTimezone || Intl.DateTimeFormat().resolvedOptions().timeZone;
+      // Auto-detect user's timezone
+      const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
       const res = await fetch(`${API_URL}/auth/wallet-login`, {
         method: 'POST',

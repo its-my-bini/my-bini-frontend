@@ -1,38 +1,14 @@
 'use client';
 
 import { useState } from 'react';
-import { X, Loader2, User, Globe } from 'lucide-react';
+import { X, Loader2, User } from 'lucide-react';
 import { useConnection, useDisconnect } from 'wagmi';
-
-// Common timezones
-const TIMEZONES = [
-  { value: 'Asia/Jakarta', label: 'Jakarta (WIB)' },
-  { value: 'Asia/Makassar', label: 'Makassar (WITA)' },
-  { value: 'Asia/Jayapura', label: 'Jayapura (WIT)' },
-  { value: 'Asia/Singapore', label: 'Singapore' },
-  { value: 'Asia/Tokyo', label: 'Tokyo' },
-  { value: 'Asia/Seoul', label: 'Seoul' },
-  { value: 'Asia/Shanghai', label: 'Shanghai' },
-  { value: 'Asia/Hong_Kong', label: 'Hong Kong' },
-  { value: 'Asia/Bangkok', label: 'Bangkok' },
-  { value: 'Asia/Manila', label: 'Manila' },
-  { value: 'Asia/Kolkata', label: 'India' },
-  { value: 'Asia/Dubai', label: 'Dubai' },
-  { value: 'Europe/London', label: 'London' },
-  { value: 'Europe/Paris', label: 'Paris' },
-  { value: 'Europe/Berlin', label: 'Berlin' },
-  { value: 'America/New_York', label: 'New York' },
-  { value: 'America/Los_Angeles', label: 'Los Angeles' },
-  { value: 'America/Chicago', label: 'Chicago' },
-  { value: 'Australia/Sydney', label: 'Sydney' },
-  { value: 'Pacific/Auckland', label: 'Auckland' },
-];
 
 interface WalletLoginModalProps {
   isOpen: boolean;
   onClose: () => void;
   isNewUser: boolean;
-  onLogin: (name?: string, timezone?: string) => Promise<boolean>;
+  onLogin: (name?: string) => Promise<boolean>;
   isAuthenticating: boolean;
 }
 
@@ -46,15 +22,6 @@ export default function WalletLoginModal({
   const { address } = useConnection();
   const { disconnect } = useDisconnect();
   const [name, setName] = useState('');
-  const [timezone, setTimezone] = useState(() => {
-    // Auto-detect timezone on initial render
-    if (typeof window !== 'undefined') {
-      const detected = Intl.DateTimeFormat().resolvedOptions().timeZone;
-      const found = TIMEZONES.find(tz => tz.value === detected);
-      return found ? detected : 'Asia/Jakarta';
-    }
-    return 'Asia/Jakarta';
-  });
   const [error, setError] = useState('');
 
   if (!isOpen) return null;
@@ -73,7 +40,7 @@ export default function WalletLoginModal({
       return;
     }
 
-    const success = await onLogin(isNewUser ? name.trim() : undefined, timezone);
+    const success = await onLogin(isNewUser ? name.trim() : undefined);
     if (!success) {
       setError('Failed to sign in. Please try again.');
     }
@@ -139,25 +106,6 @@ export default function WalletLoginModal({
               />
             </div>
           )}
-
-          {/* Timezone selector */}
-          <div>
-            <label className="block text-sm font-medium text-(--c-muted) mb-2">
-              <Globe size={14} className="inline mr-2" />
-              Timezone
-            </label>
-            <select
-              value={timezone}
-              onChange={(e) => setTimezone(e.target.value)}
-              className="w-full bg-(--c-bg) border border-(--c-border) rounded-xl px-4 py-3 text-white focus:outline-none focus:border-(--c-primary) transition appearance-none cursor-pointer"
-            >
-              {TIMEZONES.map((tz) => (
-                <option key={tz.value} value={tz.value}>
-                  {tz.label}
-                </option>
-              ))}
-            </select>
-          </div>
 
           {/* Error message */}
           {error && (
