@@ -104,6 +104,37 @@ body {
   overflow: hidden;
 }
 
+/* Pre-render splash (no markup): hide app until splash is gone */
+html[data-splash="on"] body > * {
+  visibility: hidden;
+}
+
+html[data-splash="on"] body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background-color: var(--c-bg);
+  background-image: url('/my-bini-spalsh.png');
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: clamp(260px, 60vw, 320px);
+  opacity: 1;
+  animation: mybini-splash-fade 1.5s ease forwards;
+}
+
+@keyframes mybini-splash-fade {
+  0% {
+    opacity: 1;
+  }
+  70% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
 /* Telegram-like Custom Scrollbar */
 ::-webkit-scrollbar {
   width: 6px;

@@ -3,6 +3,7 @@
 import { MessageCircle, Wallet, User } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import Image from 'next/image';
 import { ConnectButton } from '@rainbow-me/rainbowkit';
 import { useTheme } from '@/lib/theme';
 import { useSocket } from '@/hooks/useSocket';
@@ -18,7 +19,10 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
       {/* DESKTOP SIDEBAR (Hidden on Mobile) */}
       <aside className="hidden md:flex w-80 flex-col border-r border-(--c-border-light) bg-(--c-secondary)">
         <div className="p-4 border-b border-(--c-border-light) flex justify-between items-center">
-          <h1 className="font-bold text-xl ml-2">My Bini</h1>
+          <div className="flex items-center gap-2 ml-2">
+            <Image src="/my-bini.png" alt="My Bini" width={80} height={80} className="rounded-lg" />
+            <h1 className="font-bold text-xl">My Bini</h1>
+          </div>
           <ConnectButton accountStatus="avatar" chainStatus="none" showBalance={false} />
         </div>
 
@@ -34,7 +38,10 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
         {/* Mobile Header (Hidden on Desktop, hidden in chat) */}
         {!isInChat && (
           <header className="md:hidden h-14 bg-(--c-secondary) flex items-center justify-between px-4 border-b border-(--c-border-light) shrink-0 z-10">
-            <span className="font-bold">My Bini</span>
+            <div className="flex items-center gap-2">
+              <Image src="/my-bini-spalsh.png" alt="My Bini" width={28} height={28} className="rounded-lg" />
+              <span className="font-bold">My Bini</span>
+            </div>
             <ConnectButton accountStatus="avatar" chainStatus="none" showBalance={false} />
           </header>
         )}
