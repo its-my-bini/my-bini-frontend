@@ -14,44 +14,21 @@ import { CharacterListSkeleton } from "@/components/Skeleton";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
 
-// Default personas so the list is never empty
-const DEFAULT_PERSONAS: Persona[] = [
-  {
-    id: "luna",
-    name: "Luna",
-    type: "sweet",
-    description: "A warm and caring companion who loves to make you smile.",
-  },
-  {
-    id: "mia",
-    name: "Mia",
-    type: "tsundere",
-    description: "Don't get the wrong idea! I'm just being nice...",
-  },
-  {
-    id: "aiko",
-    name: "Aiko",
-    type: "playful",
-    description: "Life is more fun with a little mischief!",
-  },
-];
-
 export default function DashboardPage() {
   const { address, isConnected } = useConnection();
   const router = useRouter();
   const queryClient = useQueryClient();
   const [search, setSearch] = useState("");
 
-  // Fetch available personas (fallback to defaults if API fails)
-  const { data: personas = DEFAULT_PERSONAS, isLoading: isLoadingPersonas } =
+  // Fetch available personas from API
+  const { data: personas = [], isLoading: isLoadingPersonas } =
     useQuery<Persona[]>({
       queryKey: ["personas"],
       queryFn: async () => {
         const res = await fetch(`${API_URL}/personas`);
         if (!res.ok) throw new Error("Failed to fetch personas");
         const data = await res.json();
-        const list = data.personas || [];
-        return list.length > 0 ? list : DEFAULT_PERSONAS;
+        return data.personas || [];
       },
       staleTime: 1000 * 60 * 30, // 30 min — personas rarely change
     });
@@ -76,7 +53,7 @@ export default function DashboardPage() {
   // Prefetch chat routes for faster navigation
   useEffect(() => {
     personas.forEach((p) => {
-      router.prefetch(`/dashboard/chat/${p.id}`);
+      router.prefetch(`/chat/${p.id}`);
     });
   }, [personas, router]);
 
@@ -94,7 +71,7 @@ export default function DashboardPage() {
     }).catch(() => {});
 
     // Navigate immediately — don't wait for select-persona response
-    router.push(`/dashboard/chat/${personaId}`);
+    router.push(`/chat/${personaId}`);
   };
 
   // Prefetch chat history on hover so it's ready when they click
@@ -120,15 +97,39 @@ export default function DashboardPage() {
 
   const filteredPersonas = useMemo(() => {
     const q = search.trim().toLowerCase();
-    if (!q) return personas;
-    return personas.filter((p) => {
-      return (
-        p.name.toLowerCase().includes(q) ||
-        p.type.toLowerCase().includes(q) ||
-        p.description.toLowerCase().includes(q)
+    let result = personas;
+    
+    if (q) {
+      result = personas.filter((p) => {
+        return (
+          p.name.toLowerCase().includes(q) ||
+          p.type.toLowerCase().includes(q) ||
+          p.description.toLowerCase().includes(q)
+        );
+      });
+    }
+
+    // Sort by most recent chat (like WhatsApp)
+    return [...result].sort((a, b) => {
+      const relA = profile?.relationships?.find(
+        (r) => r.persona_name.toLowerCase() === a.name.toLowerCase()
       );
+      const relB = profile?.relationships?.find(
+        (r) => r.persona_name.toLowerCase() === b.name.toLowerCase()
+      );
+
+      // Personas with chat history come first
+      if (relA?.last_interaction && !relB?.last_interaction) return -1;
+      if (!relA?.last_interaction && relB?.last_interaction) return 1;
+
+      // Both have history: sort by most recent
+      if (relA?.last_interaction && relB?.last_interaction) {
+        return new Date(relB.last_interaction).getTime() - new Date(relA.last_interaction).getTime();
+      }
+
+      return 0; // Keep original order for those without history
     });
-  }, [personas, search]);
+  }, [personas, search, profile?.relationships]);
 
   const formatLastInteraction = (iso?: string) => {
     if (!iso) return "";
@@ -157,13 +158,13 @@ export default function DashboardPage() {
   return (
     <AppLayout>
       <div className="h-full flex flex-col bg-(--c-secondary)">
-        {/* WhatsApp-like header */}
-        <div className="px-4 py-3 flex items-center justify-between mx-auto w-full shrink-0">
-          <h1 className="text-xl font-bold text-white">Chats</h1>
+        {/* WhatsApp-like header - hidden on mobile */}
+        <div className="hidden md:flex px-4 py-3 items-center justify-between mx-auto w-full shrink-0">
+          <h1 className="text-2xl font-bold text-white">Chats</h1>
         </div>
 
         {/* Search bar */}
-        <div className="px-3 pb-3 flex items-center gap-3 mx-auto w-full shrink-0 border-b border-(--c-divider)">
+        <div className="px-3 py-3 flex items-center gap-3 mx-auto w-full shrink-0 border-b border-(--c-divider)">
           <div className="flex-1 border rounded-xl border-(--c-divider) relative ">
             <Search
               size={18}
@@ -195,9 +196,9 @@ export default function DashboardPage() {
                 (r) => r.persona_name.toLowerCase() === persona.name.toLowerCase(),
               );
 
-              // Show last message if has relationship, otherwise show description
-              const subtitle = relationship
-                ? `Level ${relationship.intimacy_level} · ${relationship.status}`
+              // Show last message preview like WhatsApp, or description if no chat yet
+              const subtitle = relationship?.last_message
+                ? relationship.last_message
                 : persona.description;
 
               const timeText = formatLastInteraction(relationship?.last_interaction);

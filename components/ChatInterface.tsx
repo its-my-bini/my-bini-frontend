@@ -81,7 +81,7 @@ export default function ChatInterface({ personaId }: ChatInterfaceProps) {
 
   // Get relationship for current persona
   const relationship = userProfile?.relationships?.find(
-    (r) => r.persona_name.toLowerCase() === persona?.name?.toLowerCase()
+    (r) => r.persona_name.toLowerCase() === persona?.name?.toLowerCase(),
   );
 
   // Track if user is actively sending to prevent history overwriting local messages
@@ -89,7 +89,9 @@ export default function ChatInterface({ personaId }: ChatInterfaceProps) {
   const historyLoadedRef = useRef(false);
 
   // Fetch chat history
-  const { data: chatHistory, isLoading: isLoadingHistory } = useQuery<ChatHistoryMessage[]>({
+  const { data: chatHistory, isLoading: isLoadingHistory } = useQuery<
+    ChatHistoryMessage[]
+  >({
     queryKey: ["chat-history", address, personaId],
     queryFn: async () => {
       if (!address) return [];
@@ -144,18 +146,26 @@ export default function ChatInterface({ personaId }: ChatInterfaceProps) {
     if (!address || !personaId || personaSelectedRef.current) return;
     personaSelectedRef.current = true;
     fetch(`${API_URL}/user/select-persona`, {
-      method: 'POST',
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
-        'x-wallet-address': address,
+        "Content-Type": "application/json",
+        "x-wallet-address": address,
       },
       body: JSON.stringify({ persona_id: personaId }),
-    }).catch(() => { /* ignore — may already be selected */ });
+    }).catch(() => {
+      /* ignore — may already be selected */
+    });
   }, [address, personaId]);
 
   // Show profile modal only on very first visit (no chat history and no local messages)
   useEffect(() => {
-    if (!isLoadingHistory && chatHistory && chatHistory.length === 0 && messages.length === 0 && persona) {
+    if (
+      !isLoadingHistory &&
+      chatHistory &&
+      chatHistory.length === 0 &&
+      messages.length === 0 &&
+      persona
+    ) {
       setShowProfileModal(true);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -171,7 +181,7 @@ export default function ChatInterface({ personaId }: ChatInterfaceProps) {
       setMessages((prev) => [
         ...prev,
         {
-          role: 'ai',
+          role: "ai",
           content: data.content,
           date: new Date(data.timestamp),
         },
@@ -243,10 +253,10 @@ export default function ChatInterface({ personaId }: ChatInterfaceProps) {
   // Helper: select persona
   const selectPersona = () =>
     fetch(`${API_URL}/user/select-persona`, {
-      method: 'POST',
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
-        'x-wallet-address': address!,
+        "Content-Type": "application/json",
+        "x-wallet-address": address!,
       },
       body: JSON.stringify({ persona_id: personaId }),
     });
@@ -299,7 +309,11 @@ export default function ChatInterface({ personaId }: ChatInterfaceProps) {
           setMessages((prev) => {
             const newArr = [...prev];
             const lastIdx = newArr.length - 1;
-            newArr[lastIdx] = { ...newArr[lastIdx], content: "", isStreaming: true };
+            newArr[lastIdx] = {
+              ...newArr[lastIdx],
+              content: "",
+              isStreaming: true,
+            };
             return newArr;
           });
           const retryResponse = await sendChatRequest(userContent);
@@ -346,7 +360,7 @@ export default function ChatInterface({ personaId }: ChatInterfaceProps) {
         <div className="bg-(--c-secondary) border-b border-(--c-border) p-4">
           <div className="flex items-center gap-3 px-1">
             <button
-              onClick={() => router.push("/dashboard")}
+              onClick={() => router.push("/chat")}
               className="text-(--c-muted) hover:text-white transition"
             >
               <ArrowLeft size={24} />
@@ -414,7 +428,11 @@ export default function ChatInterface({ personaId }: ChatInterfaceProps) {
                       className="object-cover w-full h-full"
                     />
                   ) : (
-                    <Heart size={48} className="text-(--c-on-primary)" fill="currentColor" />
+                    <Heart
+                      size={48}
+                      className="text-(--c-on-primary)"
+                      fill="currentColor"
+                    />
                   )}
                 </div>
                 <h2 className="text-3xl font-bold text-white mb-1">
@@ -427,15 +445,21 @@ export default function ChatInterface({ personaId }: ChatInterfaceProps) {
               <div className="bg-(--c-bg) rounded-2xl p-4 mb-6 space-y-3">
                 <div className="flex justify-between items-center">
                   <span className="text-(--c-muted)">Level</span>
-                  <span className="text-white font-semibold">{relationship?.intimacy_level || 1}</span>
+                  <span className="text-white font-semibold">
+                    {relationship?.intimacy_level || 1}
+                  </span>
                 </div>
                 <div className="flex justify-between items-center">
                   <span className="text-(--c-muted)">Status</span>
-                  <span className="text-(--c-accent) font-medium capitalize">{relationship?.status || 'Stranger'}</span>
+                  <span className="text-(--c-accent) font-medium capitalize">
+                    {relationship?.status || "Stranger"}
+                  </span>
                 </div>
                 <div className="flex justify-between items-center">
                   <span className="text-(--c-muted)">Messages</span>
-                  <span className="text-white font-semibold">{messages.length}</span>
+                  <span className="text-white font-semibold">
+                    {messages.length}
+                  </span>
                 </div>
               </div>
 
@@ -456,76 +480,80 @@ export default function ChatInterface({ personaId }: ChatInterfaceProps) {
         {isLoadingHistory ? (
           <ChatHistorySkeleton />
         ) : (
-        <AnimatePresence>
-          {messages.map((msg, idx) => {
-            // Hide empty streaming bubble (typing dots shown separately)
-            if (msg.isStreaming && !msg.content) return null;
+          <AnimatePresence>
+            {messages.map((msg, idx) => {
+              // Hide empty streaming bubble (typing dots shown separately)
+              if (msg.isStreaming && !msg.content) return null;
 
-            return (
-              <motion.div
-                key={idx}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                className={`flex w-full ${msg.role === "user" ? "justify-end" : "justify-start"}`}
-              >
-                <div
-                  className={`max-w-[80%] md:max-w-[60%] px-4 py-2 rounded-2xl shadow-sm text-[15px] leading-relaxed relative group
+              return (
+                <motion.div
+                  key={idx}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className={`flex w-full ${msg.role === "user" ? "justify-end" : "justify-start"}`}
+                >
+                  <div
+                    className={`max-w-[80%] md:max-w-[60%] px-4 py-2 rounded-2xl shadow-sm text-[15px] leading-relaxed relative group
                   ${
                     msg.role === "user"
                       ? "bg-(--c-primary) text-(--c-on-primary) rounded-tr-none"
                       : "bg-(--c-secondary) text-white rounded-tl-none"
                   }`}
-                >
-                  {msg.content}
-                  {!msg.isStreaming && msg.content && (
-                    <span className="text-[10px] opacity-60 block text-right mt-1">
-                      {msg.date.toLocaleTimeString([], {
-                        hour: "2-digit",
-                        minute: "2-digit",
-                      })}
-                    </span>
+                  >
+                    {msg.content}
+                    {!msg.isStreaming && msg.content && (
+                      <span className="text-[10px] opacity-60 block text-right mt-1">
+                        {msg.date.toLocaleTimeString([], {
+                          hour: "2-digit",
+                          minute: "2-digit",
+                        })}
+                      </span>
+                    )}
+                  </div>
+                </motion.div>
+              );
+            })}
+
+            {isTyping && messages[messages.length - 1]?.isStreaming && (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                className="flex justify-start items-end gap-2"
+              >
+                {/* Avatar */}
+                <div className="w-8 h-8 rounded-full overflow-hidden shrink-0 bg-(--c-primary)">
+                  {getPersonaImage(personaId) ? (
+                    <Image
+                      src={getPersonaImage(personaId)!}
+                      alt={persona?.name || ""}
+                      width={32}
+                      height={32}
+                      className="object-cover w-full h-full"
+                    />
+                  ) : (
+                    <div className="flex items-center justify-center w-full h-full">
+                      <Heart
+                        size={14}
+                        className="text-(--c-on-primary)"
+                        fill="currentColor"
+                      />
+                    </div>
                   )}
                 </div>
+                <div className="bg-(--c-secondary) px-4 py-3 rounded-2xl rounded-tl-none flex gap-1">
+                  <span className="w-2 h-2 bg-(--c-accent) rounded-full animate-bounce"></span>
+                  <span className="w-2 h-2 bg-(--c-accent) rounded-full animate-bounce delay-75"></span>
+                  <span className="w-2 h-2 bg-(--c-accent) rounded-full animate-bounce delay-150"></span>
+                </div>
               </motion.div>
-            );
-          })}
-
-          {isTyping && messages[messages.length - 1]?.isStreaming && (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              className="flex justify-start items-end gap-2"
-            >
-              {/* Avatar */}
-              <div className="w-8 h-8 rounded-full overflow-hidden shrink-0 bg-(--c-primary)">
-                {getPersonaImage(personaId) ? (
-                  <Image
-                    src={getPersonaImage(personaId)!}
-                    alt={persona?.name || ''}
-                    width={32}
-                    height={32}
-                    className="object-cover w-full h-full"
-                  />
-                ) : (
-                  <div className="flex items-center justify-center w-full h-full">
-                    <Heart size={14} className="text-(--c-on-primary)" fill="currentColor" />
-                  </div>
-                )}
-              </div>
-              <div className="bg-(--c-secondary) px-4 py-3 rounded-2xl rounded-tl-none flex gap-1">
-                <span className="w-2 h-2 bg-(--c-accent) rounded-full animate-bounce"></span>
-                <span className="w-2 h-2 bg-(--c-accent) rounded-full animate-bounce delay-75"></span>
-                <span className="w-2 h-2 bg-(--c-accent) rounded-full animate-bounce delay-150"></span>
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
+            )}
+          </AnimatePresence>
         )}
         <div ref={messagesEndRef} />
       </div>
 
       {/* Input Area (Sticky Bottom) */}
-      <div className="absolute bottom-0 w-full bg-(--c-secondary-90) backdrop-blur-md border-t border-(--c-border-light) p-2 md:p-4">
+      <div className="absolute bottom-0 w-full  p-2 md:p-4">
         <div className="max-w-4xl mx-auto flex items-end gap-2 bg-(--c-bg) p-2 rounded-3xl border border-(--c-border)">
           <textarea
             className="flex-1 bg-transparent text-white placeholder-(--c-muted-faint) px-4 py-2 focus:outline-none resize-none max-h-32 min-h-11"

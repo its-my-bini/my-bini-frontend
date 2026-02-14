@@ -2,6 +2,7 @@
 
 import { AppLayout } from "@/components/AppLayout";
 import DepositModal from "@/components/DepositModal";
+import { WalletSkeleton } from "@/components/Skeleton";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useConnection, useBalance } from "wagmi";
 import { Wallet, Clock, MessageCircle, Coins } from "lucide-react";
@@ -36,7 +37,7 @@ export default function WalletPage() {
   });
 
   // Get user stats from backend
-  const { data: stats } = useQuery({
+  const { data: stats, isLoading: isLoadingStats } = useQuery({
     queryKey: ["user-stats", address],
     queryFn: async () => {
       if (!address) return null;
@@ -73,6 +74,8 @@ export default function WalletPage() {
     }
   };
 
+  const isLoading = isLoadingMon || isLoadingTokens || isLoadingStats;
+
   if (!isConnected) {
     return (
       <AppLayout>
@@ -90,12 +93,20 @@ export default function WalletPage() {
     );
   }
 
+  if (isLoading) {
+    return (
+      <AppLayout>
+        <WalletSkeleton />
+      </AppLayout>
+    );
+  }
+
   return (  
     <AppLayout>
-      <div className="p-4 md:p-6 max-w-full h-full bg-(--c-secondary) mx-auto space-y-4">
+      <div className=" p-4 md:py-4 md:px-8 max-w-full h-full bg-(--c-secondary) mx-auto space-y-4">
         {/* Header */}
-        <div className="flex items-center justify-between mb-2">
-          <h1 className="text-2xl font-bold text-white">Wallet</h1>
+        <div className=" flex items-center justify-between mb-2">
+          <h1 className="hidden md:block text-2xl font-bold text-white">Wallet</h1>
           <ConnectButton />
         </div>
 
@@ -155,7 +166,7 @@ export default function WalletPage() {
         </button>
 
         {/* Deposit Section */}
-        <div className="bg-(--c-secondary) border border-(--c-border) rounded-2xl p-4">
+        <div className="bg-(--c-card) rounded-2xl p-4">
           <h2 className="text-lg font-bold mb-3 text-white">Top Up Tokens</h2>
           <DepositModal />
         </div>

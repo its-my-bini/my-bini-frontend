@@ -8,6 +8,8 @@ export interface User {
   wallet_address: string;
   token_balance: number;
   created_at: string;
+  username?: string;
+  name?: string;
 }
 
 export interface UserProfile extends User {
@@ -23,6 +25,7 @@ export interface UserProfile extends User {
     intimacy_level: number;
     status: string;
     last_interaction: string;
+    last_message?: string;
   }>;
 }
 
@@ -39,6 +42,16 @@ export interface Persona {
   name: string;
   type: string;
   description: string;
+  // Optional detail fields from API
+  age?: string;
+  height?: string;
+  birthday?: string;
+  zodiac?: string;
+  personality?: string[];
+  hobbies?: string[];
+  likes?: string[];
+  dislikes?: string[];
+  greeting?: string;
 }
 
 // Chat

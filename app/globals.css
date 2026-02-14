@@ -2,30 +2,30 @@
 
 /* Default theme (pink / Rose) */
 :root, [data-theme="pink"] {
-  --c-bg: #0b141a;
-  --c-secondary: #1f2c34;
-  --c-card: #182229;
-  --c-secondary-90: rgba(31,44,52,0.9);
-  --c-secondary-80: rgba(31,44,52,0.8);
-  --c-secondary-50: rgba(31,44,52,0.5);
-  --c-secondary-light: #2a3942;
-  --c-primary: #00a884;
-  --c-primary-hover: #008f72;
-  --c-accent: #25d366;
+  --c-bg: #1a0a14;
+  --c-secondary: #2d1525;
+  --c-card: #241119;
+  --c-secondary-90: rgba(45,21,37,0.9);
+  --c-secondary-80: rgba(45,21,37,0.8);
+  --c-secondary-50: rgba(45,21,37,0.5);
+  --c-secondary-light: #3d2133;
+  --c-primary: #ec4899;
+  --c-primary-hover: #db2777;
+  --c-accent: #f472b6;
   --c-on-primary: #ffffff;
-  --c-muted: rgba(209,215,218,0.8);
-  --c-muted-dim: rgba(209,215,218,0.6);
-  --c-muted-faint: rgba(209,215,218,0.4);
-  --c-border: rgba(134,150,160,0.2);
-  --c-border-light: rgba(134,150,160,0.15);
-  --c-border-accent: rgba(0,168,132,0.5);
-  --c-hover-bg: rgba(134,150,160,0.1);
-  --c-surface: rgba(134,150,160,0.08);
-  --c-primary-dim: rgba(0,168,132,0.2);
-  --c-primary-faint: rgba(0,168,132,0.1);
-  --c-text-light: #e9edef;
-  --c-svg-fill: #233138;
-  --c-divider: rgba(134,150,160,0.15);
+  --c-muted: rgba(249,168,212,0.8);
+  --c-muted-dim: rgba(249,168,212,0.6);
+  --c-muted-faint: rgba(249,168,212,0.5);
+  --c-border: rgba(131,24,67,0.6);
+  --c-border-light: rgba(131,24,67,0.5);
+  --c-border-accent: rgba(236,72,153,0.6);
+  --c-hover-bg: rgba(131,24,67,0.5);
+  --c-surface: rgba(131,24,67,0.4);
+  --c-primary-dim: rgba(236,72,153,0.25);
+  --c-primary-faint: rgba(236,72,153,0.15);
+  --c-text-light: #fce7f3;
+  --c-svg-fill: #3d1a2e;
+  --c-divider: rgba(249,168,212,0.15);
 }
 
 [data-theme="purple"] {
@@ -163,6 +163,20 @@ html[data-splash="on"] body::before {
   border-radius: 3px;
 }
 
+/* Mobile: hide scrollbars (still scrollable) */
+@media (max-width: 768px) {
+  * {
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE/Edge legacy */
+  }
+
+  *::-webkit-scrollbar {
+    width: 0;
+    height: 0;
+    display: none;
+  }
+}
+
 /* Tailwind animation delays */
 @keyframes bounce {
   0%, 100% {
@@ -185,4 +199,40 @@ html[data-splash="on"] body::before {
 
 .delay-150 {
   animation-delay: 150ms;
+}
+
+/* Sonner (toast) theming — bind Sonner CSS variables to our theme variables */
+[data-sonner-toaster] {
+  /* Base toast */
+  --normal-bg: var(--c-card);
+  --normal-bg-hover: var(--c-secondary-light);
+  --normal-border: var(--c-border);
+  --normal-border-hover: var(--c-border-light);
+  --normal-text: var(--c-text-light);
+
+  /* Rich colors (we keep background aligned with theme, add semantic accents) */
+  --success-bg: var(--c-card);
+  --success-border: rgba(34, 197, 94, 0.45);
+  --success-text: rgb(34, 197, 94);
+
+  --info-bg: var(--c-card);
+  --info-border: rgba(59, 130, 246, 0.45);
+  --info-text: rgb(59, 130, 246);
+
+  --warning-bg: var(--c-card);
+  --warning-border: rgba(245, 158, 11, 0.5);
+  --warning-text: rgb(245, 158, 11);
+
+  --error-bg: var(--c-card);
+  --error-border: rgba(239, 68, 68, 0.5);
+  --error-text: rgb(239, 68, 68);
+}
+
+/* Description color should be readable in our dark themes */
+[data-sonner-toast][data-styled='true'] [data-description] {
+  color: var(--c-muted);
+}
+
+[data-rich-colors='true'][data-sonner-toast][data-styled='true'] [data-description] {
+  color: inherit;
 }

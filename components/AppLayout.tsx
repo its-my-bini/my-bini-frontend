@@ -9,15 +9,15 @@ import { useSocket } from '@/hooks/useSocket';
 
 export function AppLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
-  const isInChat = pathname.startsWith('/dashboard/chat/');
+  const isInChat = pathname.startsWith('/chat/') && pathname !== '/chat';
   const { bgPattern } = useTheme();
   useSocket(); // Global WebSocket connection for notifications & proactive messages
 
   return (
-    <div className="flex h-screen w-full bg-(--c-bg) text-white">
+    <div className="flex h-screen w-full bg-(--c-secondary) text-white">
       {/* DESKTOP SIDEBAR (Hidden on Mobile) */}
       <aside className="hidden md:flex w-80 flex-col border-r border-(--c-border-light) bg-(--c-secondary)">
-        <div className="p-4 border-b border-(--c-border-light) flex justify-between items-center">
+        <div className="p-1 border-b border-(--c-border-light) flex justify-between items-center">
           <div className="flex items-center gap-2 ml-2">
             <Image src="/my-bini.png" alt="My Bini" width={80} height={80} className="rounded-lg" />
             <h1 className="font-bold text-xl">My Bini</h1>
@@ -25,7 +25,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
         </div>
 
         <div className="flex-1 overflow-y-auto py-2">
-          <SidebarItem href="/dashboard" icon={<MessageCircle />} label="Chats" />
+          <SidebarItem href="/chat" icon={<MessageCircle />} label="Chats" />
           <SidebarItem href="/wallet" icon={<Wallet />} label="Wallet" />
           <SidebarItem href="/profile" icon={<User />} label="Profile" />
         </div>
@@ -35,16 +35,16 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
       <main className="flex-1 flex flex-col relative h-full w-full overflow-hidden">
         {/* Mobile Header (Hidden on Desktop, hidden in chat) */}
         {!isInChat && (
-          <header className="md:hidden h-14 bg-(--c-secondary) flex items-center justify-between px-4 border-b border-(--c-border-light) shrink-0 z-10">
+          <header className="md:hidden h-14 bg-(--c-secondary) flex items-center justify-between px-2 border-b border-(--c-border-light) shrink-0 z-10">
             <div className="flex items-center gap-2">
-              <Image src="/my-bini-spalsh.png" alt="My Bini" width={28} height={28} className="rounded-lg" />
+              <Image src="/my-bini.png" alt="My Bini" width={64} height={64} className="rounded-lg h-auto w-auto" />
               <span className="font-bold">My Bini</span>
             </div>
           </header>
         )}
 
-        {/* SVG Pattern Background - fixed so it doesn't scroll */}
-        {bgPattern.src && (
+        {/* SVG Pattern Background - only shown on chat page */}
+        {isInChat && bgPattern.src && (
           <div
             className="absolute inset-0 pointer-events-none z-0"
             style={{
@@ -67,7 +67,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
         {/* MOBILE BOTTOM NAV (Hidden on Desktop, hidden in chat) */}
         {!isInChat && (
           <nav className="md:hidden h-16 bg-(--c-secondary) border-t border-(--c-border-light) flex items-center justify-around shrink-0 z-10 pb-safe">
-            <MobileNavItem href="/dashboard" icon={<MessageCircle />} label="Chats" />
+            <MobileNavItem href="/chat" icon={<MessageCircle />} label="Chats" />
             <MobileNavItem href="/wallet" icon={<Wallet />} label="Wallet" />
             <MobileNavItem href="/profile" icon={<User />} label="Settings" />
           </nav>

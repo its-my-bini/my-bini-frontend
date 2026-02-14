@@ -1,18 +1,20 @@
 'use client';
 
+import { useState } from 'react';
 import { AppLayout } from '@/components/AppLayout';
 import { useConnection } from 'wagmi';
 import { useQuery } from '@tanstack/react-query';
-import { Heart, ArrowLeft, Sparkles, Star, Music } from 'lucide-react';
+import { Heart, ArrowLeft, Sparkles, Star, Music, ChevronDown } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import type { UserProfile, Persona } from '@/types';
-import { getPersonaImage, getPersonaColor, getCharacterDetail } from '@/lib/persona-images';
+import { getPersonaImage, getPersonaColor } from '@/lib/persona-images';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
 
 export default function CharacterPage() {
   const { address } = useConnection();
+  const [expandedId, setExpandedId] = useState<string | null>(null);
 
   const { data: profile } = useQuery<UserProfile>({
     queryKey: ['profile', address],
@@ -40,9 +42,9 @@ export default function CharacterPage() {
 
   return (
     <AppLayout>
-      <div className="p-4 md:p-8 max-w-4xl mx-auto pb-8">
+      <div className="p-4 md:py-4 md:px-8 max-w-4xl mx-auto pb-8">
         {/* Header */}
-        <div className="flex items-center gap-3 mb-6">
+        <div className="flex items-center gap-3 mb-2 md:mb-6">
           <Link href="/profile" className="text-(--c-muted) hover:text-white transition">
             <ArrowLeft size={24} />
           </Link>
@@ -50,30 +52,28 @@ export default function CharacterPage() {
         </div>
 
         {/* Character List */}
-        <div className="space-y-6">
+        <div className="space-y-2">
           {personas.map((persona) => {
             const image = getPersonaImage(persona.id);
             const color = getPersonaColor(persona.id);
-            const detail = getCharacterDetail(persona.id);
+            const hasDetails = persona.age || persona.personality;
             const relationship = profile?.relationships?.find(
               (r) => r.persona_name.toLowerCase() === persona.name.toLowerCase()
             );
+            const isExpanded = expandedId === persona.id;
 
             return (
-              <div
-                key={persona.id}
-                className="bg-(--c-bg) border border-(--c-border) rounded-2xl overflow-hidden"
-              >
+              <div key={persona.id} className="bg-(--c-card) border border-(--c-border) rounded-xl overflow-hidden">
                 {/* Top: Image + Basic Info */}
                 <div className="flex flex-col md:flex-row">
                   {/* Character Image */}
-                  <div className={`relative w-full md:w-48 h-56 md:h-auto bg-linear-to-br ${color} shrink-0`}>
+                  <div className={`relative w-full md:w-48 h-72 md:h-auto rounded-xl overflow-hidden shrink-0 `}>
                     {image ? (
                       <Image
                         src={image}
                         alt={persona.name}
                         fill
-                        className="object-cover"
+                        className="object-cover pt-2 px-2 rounded-t-2xl"
                       />
                     ) : (
                       <div className="flex items-center justify-center h-full">
@@ -92,9 +92,9 @@ export default function CharacterPage() {
                     </div>
 
                     {/* Greeting */}
-                    {detail && (
+                    {persona.greeting && (
                       <p className="text-sm text-(--c-muted) italic mb-3 leading-relaxed">
-                        &ldquo;{detail.greeting}&rdquo;
+                        &ldquo;{persona.greeting}&rdquo;
                       </p>
                     )}
 
@@ -103,11 +103,11 @@ export default function CharacterPage() {
                     </p>
 
                     {/* Quick Stats */}
-                    {detail && (
+                    {(persona.age || persona.height || persona.birthday) && (
                       <div className="flex flex-wrap gap-2 mb-3">
-                        <StatBadge label="Age" value={detail.age} />
-                        <StatBadge label="Height" value={detail.height} />
-                        <StatBadge label={detail.zodiac} value={detail.birthday} />
+                        {persona.age && <StatBadge label="Age" value={persona.age} />}
+                        {persona.height && <StatBadge label="Height" value={persona.height} />}
+                        {persona.zodiac && persona.birthday && <StatBadge label={persona.zodiac} value={persona.birthday} />}
                       </div>
                     )}
 
@@ -131,40 +131,62 @@ export default function CharacterPage() {
                   </div>
                 </div>
 
-                {/* Detail Section */}
-                {detail && (
-                  <div className="border-t border-(--c-border) p-4 md:p-5 grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {/* Personality */}
-                    <DetailSection icon={<Sparkles size={14} />} title="Personality">
-                      <div className="flex flex-wrap gap-1.5">
-                        {detail.personality.map((trait) => (
-                          <span key={trait} className="bg-(--c-primary-dim) text-(--c-accent) text-xs px-2 py-0.5 rounded-full">
-                            {trait}
-                          </span>
-                        ))}
+                {/* Detail Section - Collapsible */}
+                {hasDetails && (
+                  <div className="border-t border-(--c-border)">
+                    {/* Toggle Button */}
+                    <button
+                      onClick={() => setExpandedId(isExpanded ? null : persona.id)}
+                      className="w-full px-4 py-3 flex items-center justify-between text-sm text-(--c-muted) hover:text-white transition"
+                    >
+                      <span>More Details</span>
+                      <ChevronDown size={18} className={`transition-transform ${isExpanded ? 'rotate-180' : ''}`} />
+                    </button>
+
+                    {/* Collapsible Content */}
+                    {isExpanded && (
+                      <div className="px-4 pb-4 md:px-5 md:pb-5 grid grid-cols-1 md:grid-cols-2 gap-4">
+                        {/* Personality */}
+                        {persona.personality && persona.personality.length > 0 && (
+                          <DetailSection icon={<Sparkles size={14} />} title="Personality">
+                            <div className="flex flex-wrap gap-1.5">
+                              {persona.personality.map((trait) => (
+                                <span key={trait} className="bg-(--c-primary-dim) text-(--c-accent) text-xs px-2 py-0.5 rounded-full">
+                                  {trait}
+                                </span>
+                              ))}
+                            </div>
+                          </DetailSection>
+                        )}
+
+                        {/* Hobbies */}
+                        {persona.hobbies && persona.hobbies.length > 0 && (
+                          <DetailSection icon={<Music size={14} />} title="Hobbies">
+                            <div className="flex flex-wrap gap-1.5">
+                              {persona.hobbies.map((hobby) => (
+                                <span key={hobby} className="bg-(--c-secondary) text-(--c-muted) text-xs px-2 py-0.5 rounded-full border border-(--c-border)">
+                                  {hobby}
+                                </span>
+                              ))}
+                            </div>
+                          </DetailSection>
+                        )}
+
+                        {/* Likes */}
+                        {persona.likes && persona.likes.length > 0 && (
+                          <DetailSection icon={<Heart size={14} />} title="Likes">
+                            <p className="text-xs text-(--c-muted)">{persona.likes.join(' · ')}</p>
+                          </DetailSection>
+                        )}
+
+                        {/* Dislikes */}
+                        {persona.dislikes && persona.dislikes.length > 0 && (
+                          <DetailSection icon={<Star size={14} />} title="Dislikes">
+                            <p className="text-xs text-(--c-muted)">{persona.dislikes.join(' · ')}</p>
+                          </DetailSection>
+                        )}
                       </div>
-                    </DetailSection>
-
-                    {/* Hobbies */}
-                    <DetailSection icon={<Music size={14} />} title="Hobbies">
-                      <div className="flex flex-wrap gap-1.5">
-                        {detail.hobbies.map((hobby) => (
-                          <span key={hobby} className="bg-(--c-secondary) text-(--c-muted) text-xs px-2 py-0.5 rounded-full border border-(--c-border)">
-                            {hobby}
-                          </span>
-                        ))}
-                      </div>
-                    </DetailSection>
-
-                    {/* Likes */}
-                    <DetailSection icon={<Heart size={14} />} title="Likes">
-                      <p className="text-xs text-(--c-muted)">{detail.likes.join(' · ')}</p>
-                    </DetailSection>
-
-                    {/* Dislikes */}
-                    <DetailSection icon={<Star size={14} />} title="Dislikes">
-                      <p className="text-xs text-(--c-muted)">{detail.dislikes.join(' · ')}</p>
-                    </DetailSection>
+                    )}
                   </div>
                 )}
               </div>

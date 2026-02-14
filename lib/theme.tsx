@@ -26,6 +26,7 @@ export interface Theme {
   emoji: string;
   bg: string;
   secondary: string;
+  card: string;
   secondary90: string;
   secondary80: string;
   secondary50: string;
@@ -33,8 +34,10 @@ export interface Theme {
   primary: string;
   primaryHover: string;
   accent: string;
+  onPrimary: string;
   textLight: string;
   svgFill: string;
+  divider: string;
   rainbowAccent: string;
   muted: string;
   mutedDim: string;
@@ -55,6 +58,7 @@ export const THEMES: Record<ThemeKey, Theme> = {
     emoji: '🌸',
     bg: '#1a0a14',
     secondary: '#2d1525',
+    card: '#241119',
     secondary90: 'rgba(45,21,37,0.9)',
     secondary80: 'rgba(45,21,37,0.8)',
     secondary50: 'rgba(45,21,37,0.5)',
@@ -62,8 +66,10 @@ export const THEMES: Record<ThemeKey, Theme> = {
     primary: '#ec4899',
     primaryHover: '#db2777',
     accent: '#f472b6',
+    onPrimary: '#ffffff',
     textLight: '#fce7f3',
     svgFill: '#3d1a2e',
+    divider: 'rgba(249,168,212,0.15)',
     rainbowAccent: '#ec4899',
     muted: 'rgba(249,168,212,0.8)',
     mutedDim: 'rgba(249,168,212,0.6)',
@@ -82,6 +88,7 @@ export const THEMES: Record<ThemeKey, Theme> = {
     emoji: '💜',
     bg: '#0f0a1a',
     secondary: '#1e1530',
+    card: '#160f24',
     secondary90: 'rgba(30,21,48,0.9)',
     secondary80: 'rgba(30,21,48,0.8)',
     secondary50: 'rgba(30,21,48,0.5)',
@@ -89,8 +96,10 @@ export const THEMES: Record<ThemeKey, Theme> = {
     primary: '#a855f7',
     primaryHover: '#9333ea',
     accent: '#c084fc',
+    onPrimary: '#ffffff',
     textLight: '#f3e8ff',
     svgFill: '#2a1d45',
+    divider: 'rgba(255,255,255,0.1)',
     rainbowAccent: '#a855f7',
     muted: 'rgba(216,180,254,0.7)',
     mutedDim: 'rgba(216,180,254,0.5)',
@@ -109,6 +118,7 @@ export const THEMES: Record<ThemeKey, Theme> = {
     emoji: '🌊',
     bg: '#0a1019',
     secondary: '#152030',
+    card: '#0e1620',
     secondary90: 'rgba(21,32,48,0.9)',
     secondary80: 'rgba(21,32,48,0.8)',
     secondary50: 'rgba(21,32,48,0.5)',
@@ -116,8 +126,10 @@ export const THEMES: Record<ThemeKey, Theme> = {
     primary: '#3b82f6',
     primaryHover: '#2563eb',
     accent: '#60a5fa',
+    onPrimary: '#ffffff',
     textLight: '#dbeafe',
     svgFill: '#1a2d45',
+    divider: 'rgba(255,255,255,0.1)',
     rainbowAccent: '#3b82f6',
     muted: 'rgba(147,197,253,0.7)',
     mutedDim: 'rgba(147,197,253,0.5)',
@@ -136,6 +148,7 @@ export const THEMES: Record<ThemeKey, Theme> = {
     emoji: '⚫',
     bg: '#121212',
     secondary: '#1e1e1e',
+    card: '#181818',
     secondary90: 'rgba(30,30,30,0.9)',
     secondary80: 'rgba(30,30,30,0.8)',
     secondary50: 'rgba(30,30,30,0.5)',
@@ -143,8 +156,10 @@ export const THEMES: Record<ThemeKey, Theme> = {
     primary: '#ffffff',
     primaryHover: '#e0e0e0',
     accent: '#b0b0b0',
+    onPrimary: '#121212',
     textLight: '#ffffff',
     svgFill: '#1a1a1a',
+    divider: 'rgba(255,255,255,0.08)',
     rainbowAccent: '#888888',
     muted: 'rgba(255,255,255,0.6)',
     mutedDim: 'rgba(255,255,255,0.45)',
@@ -208,6 +223,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     r.setAttribute('data-theme', t.key);
     r.style.setProperty('--c-bg', t.bg);
     r.style.setProperty('--c-secondary', t.secondary);
+    r.style.setProperty('--c-card', t.card);
     r.style.setProperty('--c-secondary-90', t.secondary90);
     r.style.setProperty('--c-secondary-80', t.secondary80);
     r.style.setProperty('--c-secondary-50', t.secondary50);
@@ -215,8 +231,10 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     r.style.setProperty('--c-primary', t.primary);
     r.style.setProperty('--c-primary-hover', t.primaryHover);
     r.style.setProperty('--c-accent', t.accent);
+    r.style.setProperty('--c-on-primary', t.onPrimary);
     r.style.setProperty('--c-text-light', t.textLight);
     r.style.setProperty('--c-svg-fill', t.svgFill);
+    r.style.setProperty('--c-divider', t.divider);
     r.style.setProperty('--c-muted', t.muted);
     r.style.setProperty('--c-muted-dim', t.mutedDim);
     r.style.setProperty('--c-muted-faint', t.mutedFaint);
