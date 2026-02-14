@@ -1,9 +1,9 @@
 'use client';
 
 import { AppLayout } from '@/components/AppLayout';
-import { useAccount } from 'wagmi';
+import { useConnection } from 'wagmi';
 import { useQuery } from '@tanstack/react-query';
-import { Heart, ArrowLeft, Sparkles, Star, Music, Gamepad2, BookOpen } from 'lucide-react';
+import { Heart, ArrowLeft, Sparkles, Star, Music } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import type { UserProfile, Persona } from '@/types';
@@ -12,7 +12,7 @@ import { getPersonaImage, getPersonaColor, getCharacterDetail } from '@/lib/pers
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
 
 export default function CharacterPage() {
-  const { address } = useAccount();
+  const { address } = useConnection();
 
   const { data: profile } = useQuery<UserProfile>({
     queryKey: ['profile', address],

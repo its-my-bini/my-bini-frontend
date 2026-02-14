@@ -2,7 +2,7 @@
 
 import { useEffect } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
-import { useAccount } from 'wagmi';
+import { useConnection } from 'wagmi';
 import { io, Socket } from 'socket.io-client';
 import { toast } from 'sonner';
 
@@ -10,45 +10,68 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
 
 let socket: Socket | null = null;
 
+// Proactive message event payload (from Smart Routine System)
+export interface ProactiveMessage {
+  id: string;
+  content: string;
+  sender: 'ai';
+  persona_id: string;
+  timestamp: string;
+}
+
+// Custom event name for inter-component communication
+export const PROACTIVE_MSG_EVENT = 'mybini:proactive-message';
+
 export function useSocket() {
-  const { address } = useAccount();
+  const { address } = useConnection();
   const queryClient = useQueryClient();
 
   useEffect(() => {
     if (!address) return;
 
-    // Only connect if backend supports WebSocket
     try {
-      // Connect to backend WebSocket with error handling
       socket = io(API_URL, {
         auth: { walletAddress: address },
         reconnection: true,
         reconnectionDelay: 1000,
-        reconnectionAttempts: 3,
-        transports: ['websocket', 'polling'], // Try websocket first, fallback to polling
+        reconnectionAttempts: 5,
+        transports: ['websocket', 'polling'],
       });
 
       socket.on('connect', () => {
         console.log('WebSocket connected');
-        socket!.emit('join', address); // Join user-specific room
+        socket!.emit('join', address);
       });
 
-      // Listen for balance updates (docs: balance:update)
+      // Balance updates
       socket.on('balance:update', (data: { balance: number; timestamp: string }) => {
-        console.log('Balance updated:', data.balance);
         queryClient.setQueryData(['balance', address], data.balance);
         toast.success(`Balance updated: ${data.balance} tokens`);
       });
 
-      // Listen for notifications
+      // System notifications (rewards, errors, etc.)
       socket.on('notification', (data: { title: string; message: string; type: string; timestamp: string }) => {
         const toastFn = data.type === 'error' ? toast.error : data.type === 'warning' ? toast.warning : toast.success;
         toastFn(data.message);
       });
 
+      // Proactive AI messages (Smart Routine: morning, lunch, night check-ins)
+      socket.on('message:receive', (data: ProactiveMessage) => {
+        // Invalidate chat history so it refetches when user opens chat
+        queryClient.invalidateQueries({ queryKey: ['chat-history', address, data.persona_id] });
+
+        // Show toast notification
+        const personaName = data.persona_id.charAt(0).toUpperCase() + data.persona_id.slice(1);
+        toast.message(`${personaName} sent you a message`, {
+          description: data.content.length > 80 ? data.content.slice(0, 80) + '…' : data.content,
+        });
+
+        // Dispatch custom event so ChatInterface can pick it up in real-time
+        window.dispatchEvent(new CustomEvent(PROACTIVE_MSG_EVENT, { detail: data }));
+      });
+
       socket.on('connect_error', (error) => {
         console.log('WebSocket connection error (will use polling instead):', error.message);
-        // Don't show error to user, just fallback to polling
       });
 
       socket.on('disconnect', () => {
@@ -61,7 +84,6 @@ export function useSocket() {
       };
     } catch (error) {
       console.error('Failed to initialize WebSocket:', error);
-      // Gracefully fail - app will use regular polling instead
     }
   }, [address, queryClient]);
 

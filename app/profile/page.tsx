@@ -1,7 +1,7 @@
 'use client';
 
 import { AppLayout } from '@/components/AppLayout';
-import { useAccount } from 'wagmi';
+import { useConnection } from 'wagmi';
 import { useQuery } from '@tanstack/react-query';
 import { User, Heart, MessageCircle, Calendar, ChevronRight, Users, Palette, Image as ImageIcon } from 'lucide-react';
 import Image from 'next/image';
@@ -13,7 +13,7 @@ import { useTheme, THEMES, BG_PATTERNS, type ThemeKey, type BgPatternKey } from 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
 
 export default function ProfilePage() {
-  const { address } = useAccount();
+  const { address } = useConnection();
   const { theme, setTheme, bgPattern, setBgPattern } = useTheme();
 
   const { data: profile } = useQuery<UserProfile>({
@@ -28,6 +28,7 @@ export default function ProfilePage() {
       return data.profile;
     },
     enabled: !!address,
+    staleTime: 1000 * 60, // 1 min
   });
 
   // Fetch all personas for images and details
@@ -39,6 +40,7 @@ export default function ProfilePage() {
       const data = await res.json();
       return data.personas || [];
     },
+    staleTime: 1000 * 60 * 5, // 5 min — personas rarely change
   });
 
   return (
@@ -56,10 +58,24 @@ export default function ProfilePage() {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <InfoCard icon={<MessageCircle />} label="Total Messages" value={profile?.relationships?.length || 0} />
-            <InfoCard icon={<Heart />} label="Relationships" value={profile?.relationships?.length || 0} />
-            <InfoCard icon={<Calendar />} label="Days Active" value="1" />
+          <div className="bg-[var(--c-bg)] border border-[var(--c-border)] rounded-2xl p-4 flex items-center justify-around">
+            <div className="flex flex-col items-center">
+              <MessageCircle size={18} className="text-[var(--c-accent)] mb-1" />
+              <span className="text-lg font-bold text-white">{profile?.relationships?.length || 0}</span>
+              <span className="text-[10px] text-[var(--c-muted)]">Messages</span>
+            </div>
+            <div className="w-px h-10 bg-[var(--c-border)]" />
+            <div className="flex flex-col items-center">
+              <Heart size={18} className="text-[var(--c-accent)] mb-1" />
+              <span className="text-lg font-bold text-white">{profile?.relationships?.length || 0}</span>
+              <span className="text-[10px] text-[var(--c-muted)]">Relationships</span>
+            </div>
+            <div className="w-px h-10 bg-[var(--c-border)]" />
+            <div className="flex flex-col items-center">
+              <Calendar size={18} className="text-[var(--c-accent)] mb-1" />
+              <span className="text-lg font-bold text-white">1</span>
+              <span className="text-[10px] text-[var(--c-muted)]">Days Active</span>
+            </div>
           </div>
         </div>
 
@@ -169,10 +185,7 @@ export default function ProfilePage() {
             {/* Mobile: compact row with avatars */}
             <div className="md:hidden flex items-center gap-3 overflow-x-auto pb-2">
               {profile.relationships.map((rel, idx) => {
-                const persona = personas.find(
-                  (p) => p.name.toLowerCase() === rel.persona_name.toLowerCase()
-                );
-                const image = persona ? getPersonaImage(persona.id) : null;
+                const image = getPersonaImage(rel.persona_name);
                 return (
                   <div key={idx} className="flex flex-col items-center flex-shrink-0 min-w-[72px]">
                     <div className="w-14 h-14 rounded-full overflow-hidden bg-[var(--c-primary)] mb-1">
@@ -194,10 +207,7 @@ export default function ProfilePage() {
             {/* Desktop: detailed list */}
             <div className="hidden md:block space-y-3">
               {profile.relationships.map((rel, idx) => {
-                const persona = personas.find(
-                  (p) => p.name.toLowerCase() === rel.persona_name.toLowerCase()
-                );
-                const image = persona ? getPersonaImage(persona.id) : null;
+                const image = getPersonaImage(rel.persona_name);
                 return (
                   <div key={idx} className="bg-[var(--c-bg)] border border-[var(--c-border)] rounded-2xl p-4 flex items-center gap-4">
                     <div className="w-12 h-12 rounded-full overflow-hidden flex-shrink-0 bg-[var(--c-primary)]">
@@ -227,13 +237,4 @@ export default function ProfilePage() {
   );
 }
 
-function InfoCard({ icon, label, value }: { icon: React.ReactNode; label: string; value: number | string }) {
-  return (
-    <div className="bg-[var(--c-bg)] border border-[var(--c-border)] rounded-2xl p-4 text-center">
-      <div className="text-[var(--c-accent)] mb-2 flex justify-center">{icon}</div>
-      <div className="text-sm text-[var(--c-muted)]">{label}</div>
-      <div className="text-2xl font-bold text-white mt-1">{value}</div>
-    </div>
-  );
-}
 

@@ -1,18 +1,18 @@
-'use client';
+"use client";
 
-import { useAccount } from 'wagmi';
-import { useRouter } from 'next/navigation';
-import Link from 'next/link';
-import { useEffect } from 'react';
-import { Heart, Sparkles, MessageCircle } from 'lucide-react';
+import { useConnection } from "wagmi";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
+import { useEffect } from "react";
+import { Heart, Sparkles, MessageCircle } from "lucide-react";
 
 export default function Home() {
-  const { address } = useAccount();
+  const { address } = useConnection();
   const router = useRouter();
 
   useEffect(() => {
     if (address) {
-      router.push('/dashboard');
+      router.push("/dashboard");
     }
   }, [address, router]);
 
@@ -33,12 +33,13 @@ export default function Home() {
         </h1>
 
         {/* Subtitle */}
-        <p className="text-xl md:text-2xl text-[var(--c-text-light)] mb-4 max-w-2xl">
+        <p className="text-xl md:text-2xl text-(--c-text-light) mb-4 max-w-2xl">
           Your AI Girlfriend Powered by Web3
         </p>
 
         <p className="text-[var(--c-muted)] mb-12 max-w-xl">
-          Experience meaningful conversations with your personalized AI companion on the Monad blockchain
+          Experience meaningful conversations with your personalized AI
+          companion on the Monad blockchain
         </p>
 
         {/* Features */}
@@ -86,7 +87,9 @@ function FeatureCard({
 }) {
   return (
     <div className="bg-[var(--c-secondary)] border border-[var(--c-border)] rounded-2xl p-6 hover:border-[var(--c-border-accent)] transition group">
-      <div className="text-[var(--c-accent)] mb-4 group-hover:scale-110 transition">{icon}</div>
+      <div className="text-[var(--c-accent)] mb-4 group-hover:scale-110 transition">
+        {icon}
+      </div>
       <h3 className="text-white font-semibold mb-2">{title}</h3>
       <p className="text-[var(--c-muted)] text-sm">{description}</p>
     </div>

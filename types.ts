@@ -1,3 +1,7 @@
+// Utility types
+export type HexAddress = `0x${string}`;
+export type TxStatus = 'idle' | 'loading' | 'confirming' | 'success' | 'error';
+
 // User & Auth
 export interface User {
   id: string;

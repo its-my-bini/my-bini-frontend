@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import { ArrowUp, Heart, ArrowLeft, X } from "lucide-react";
-import { useAccount } from "wagmi";
+import { useConnection } from "wagmi";
 import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "sonner";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
@@ -11,8 +11,16 @@ import Image from "next/image";
 import type { Persona } from "@/types";
 import { getPersonaImage } from "@/lib/persona-images";
 import { ChatHistorySkeleton } from "@/components/Skeleton";
+import { PROACTIVE_MSG_EVENT, type ProactiveMessage } from "@/hooks/useSocket";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
+
+interface ChatHistoryMessage {
+  role: string;
+  content: string;
+  created_at?: string;
+  timestamp?: string;
+}
 
 interface Message {
   role: "user" | "ai";
@@ -26,7 +34,7 @@ interface ChatInterfaceProps {
 }
 
 export default function ChatInterface({ personaId }: ChatInterfaceProps) {
-  const { address } = useAccount();
+  const { address } = useConnection();
   const router = useRouter();
   const queryClient = useQueryClient();
   const [messages, setMessages] = useState<Message[]>([]);
@@ -35,16 +43,23 @@ export default function ChatInterface({ personaId }: ChatInterfaceProps) {
   const [showProfileModal, setShowProfileModal] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  // Fetch persona details
+  // Fetch persona details — reuse cached personas list from dashboard
   const { data: persona } = useQuery<Persona>({
     queryKey: ["persona", personaId],
     queryFn: async () => {
+      // Try cache first
+      const cached = queryClient.getQueryData<Persona[]>(["personas"]);
+      if (cached) {
+        const found = cached.find((p) => p.id === personaId);
+        if (found) return found;
+      }
       const res = await fetch(`${API_URL}/personas`);
       if (!res.ok) throw new Error("Failed to fetch personas");
       const data = await res.json();
       const personas = data.personas || [];
       return personas.find((p: Persona) => p.id === personaId) || personas[0];
     },
+    staleTime: 1000 * 60 * 5, // Persona data rarely changes
   });
 
   // Track if user is actively sending to prevent history overwriting local messages
@@ -52,7 +67,7 @@ export default function ChatInterface({ personaId }: ChatInterfaceProps) {
   const historyLoadedRef = useRef(false);
 
   // Fetch chat history
-  const { data: chatHistory, isLoading: isLoadingHistory } = useQuery<any[]>({
+  const { data: chatHistory, isLoading: isLoadingHistory } = useQuery<ChatHistoryMessage[]>({
     queryKey: ["chat-history", address, personaId],
     queryFn: async () => {
       if (!address) return [];
@@ -87,7 +102,7 @@ export default function ChatInterface({ personaId }: ChatInterfaceProps) {
     historyLoadedRef.current = true;
 
     if (chatHistory.length > 0) {
-      const formattedMessages: Message[] = chatHistory.map((msg: any) => ({
+      const formattedMessages: Message[] = chatHistory.map((msg) => ({
         role: msg.role === "user" ? "user" : "ai",
         content: msg.content,
         date: new Date(msg.created_at || msg.timestamp || new Date()),
@@ -123,6 +138,26 @@ export default function ChatInterface({ personaId }: ChatInterfaceProps) {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [chatHistory, isLoadingHistory, persona]);
+
+  // Listen for proactive AI messages (Smart Routine: morning/lunch/night check-ins)
+  useEffect(() => {
+    const handler = (e: Event) => {
+      const data = (e as CustomEvent<ProactiveMessage>).detail;
+      if (data.persona_id !== personaId) return; // Not for this chat
+      if (isSendingRef.current) return; // Don't interrupt active send
+
+      setMessages((prev) => [
+        ...prev,
+        {
+          role: 'ai',
+          content: data.content,
+          date: new Date(data.timestamp),
+        },
+      ]);
+    };
+    window.addEventListener(PROACTIVE_MSG_EVENT, handler);
+    return () => window.removeEventListener(PROACTIVE_MSG_EVENT, handler);
+  }, [personaId]);
 
   // Auto-scroll to bottom
   const scrollToBottom = () => {
@@ -286,11 +321,11 @@ export default function ChatInterface({ personaId }: ChatInterfaceProps) {
     <div className="flex flex-col h-full relative">
       {/* Chat Header */}
       {persona && (
-        <div className="bg-[var(--c-secondary)] border-b border-[var(--c-border)] p-4">
+        <div className="bg-(--c-secondary) border-b border-(--c-border) p-4">
           <div className="flex items-center gap-3 px-1">
             <button
               onClick={() => router.push("/dashboard")}
-              className="text-[var(--c-muted)] hover:text-white transition"
+              className="text-(--c-muted) hover:text-white transition"
             >
               <ArrowLeft size={24} />
             </button>
@@ -298,7 +333,7 @@ export default function ChatInterface({ personaId }: ChatInterfaceProps) {
               onClick={() => setShowProfileModal(true)}
               className="flex items-center gap-3 flex-1 hover:opacity-80 transition"
             >
-              <div className="w-12 h-12 bg-[var(--c-primary)] rounded-full flex items-center justify-center overflow-hidden">
+              <div className="w-12 h-12 bg-(--c-primary) rounded-full flex items-center justify-center overflow-hidden">
                 {getPersonaImage(personaId) ? (
                   <Image
                     src={getPersonaImage(personaId)!}
@@ -313,7 +348,7 @@ export default function ChatInterface({ personaId }: ChatInterfaceProps) {
               </div>
               <div className="text-left">
                 <h2 className="text-lg font-bold text-white">{persona.name}</h2>
-                <p className="text-xs text-[var(--c-muted)]">{persona.type}</p>
+                <p className="text-xs text-(--c-muted)">{persona.type}</p>
               </div>
             </button>
           </div>
@@ -334,20 +369,20 @@ export default function ChatInterface({ personaId }: ChatInterfaceProps) {
               initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.9, opacity: 0 }}
-              className="bg-[var(--c-secondary)] border border-[var(--c-border)] rounded-3xl p-6 max-w-md w-full"
+              className="bg-(--c-secondary) border border-(--c-border) rounded-3xl p-6 max-w-md w-full"
               onClick={(e) => e.stopPropagation()}
             >
               {/* Close Button */}
               <button
                 onClick={() => setShowProfileModal(false)}
-                className="absolute top-4 right-4 text-[var(--c-muted)] hover:text-white transition"
+                className="absolute top-4 right-4 text-(--c-muted) hover:text-white transition"
               >
                 <X size={24} />
               </button>
 
               {/* Avatar */}
               <div className="flex flex-col items-center mb-6">
-                <div className="w-24 h-24 bg-[var(--c-primary)] rounded-full flex items-center justify-center mb-4 overflow-hidden">
+                <div className="w-24 h-24 bg-(--c-primary) rounded-full flex items-center justify-center mb-4 overflow-hidden">
                   {getPersonaImage(personaId) ? (
                     <Image
                       src={getPersonaImage(personaId)!}
@@ -363,12 +398,12 @@ export default function ChatInterface({ personaId }: ChatInterfaceProps) {
                 <h2 className="text-3xl font-bold text-white mb-1">
                   {persona.name}
                 </h2>
-                <p className="text-[var(--c-accent)] font-medium">{persona.type}</p>
+                <p className="text-(--c-accent) font-medium">{persona.type}</p>
               </div>
 
               {/* Description */}
-              <div className="bg-[var(--c-bg)] border border-[var(--c-border)] rounded-2xl p-4 mb-6">
-                <p className="text-[var(--c-text-light)] text-center leading-relaxed">
+              <div className="bg-(--c-bg) border border-(--c-border) rounded-2xl p-4 mb-6">
+                <p className="text-(--c-text-light) text-center leading-relaxed">
                   {persona.description}
                 </p>
               </div>
@@ -459,7 +494,7 @@ export default function ChatInterface({ personaId }: ChatInterfaceProps) {
       </div>
 
       {/* Input Area (Sticky Bottom) */}
-      <div className="absolute bottom-0 w-full bg-[var(--c-secondary-90)] backdrop-blur-md border-t border-[var(--c-border-light)] p-2 md:p-4">
+      <div className="absolute bottom-0 w-full bg-[var(--c-secondary-90)] backdrop-blur-md border-t border-(--c-border-light) p-2 md:p-4">
         <div className="max-w-4xl mx-auto flex items-end gap-2 bg-[var(--c-bg)] p-2 rounded-3xl border border-[var(--c-border)]">
           <textarea
             className="flex-1 bg-transparent text-white placeholder-[var(--c-muted-faint)] px-4 py-2 focus:outline-none resize-none max-h-32 min-h-[44px]"

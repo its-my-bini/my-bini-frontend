@@ -203,10 +203,37 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const themeKey = useSyncExternalStore(subscribeStorage, getThemeSnapshot, getThemeServerSnapshot);
   const bgPatternKey = useSyncExternalStore(subscribeStorage, getBgSnapshot, getBgServerSnapshot);
 
+  const applyThemeToDOM = useCallback((t: Theme) => {
+    const r = document.documentElement;
+    r.setAttribute('data-theme', t.key);
+    r.style.setProperty('--c-bg', t.bg);
+    r.style.setProperty('--c-secondary', t.secondary);
+    r.style.setProperty('--c-secondary-90', t.secondary90);
+    r.style.setProperty('--c-secondary-80', t.secondary80);
+    r.style.setProperty('--c-secondary-50', t.secondary50);
+    r.style.setProperty('--c-secondary-light', t.secondaryLight);
+    r.style.setProperty('--c-primary', t.primary);
+    r.style.setProperty('--c-primary-hover', t.primaryHover);
+    r.style.setProperty('--c-accent', t.accent);
+    r.style.setProperty('--c-text-light', t.textLight);
+    r.style.setProperty('--c-svg-fill', t.svgFill);
+    r.style.setProperty('--c-muted', t.muted);
+    r.style.setProperty('--c-muted-dim', t.mutedDim);
+    r.style.setProperty('--c-muted-faint', t.mutedFaint);
+    r.style.setProperty('--c-border', t.border);
+    r.style.setProperty('--c-border-light', t.borderLight);
+    r.style.setProperty('--c-border-accent', t.borderAccent);
+    r.style.setProperty('--c-hover-bg', t.hoverBg);
+    r.style.setProperty('--c-surface', t.surface);
+    r.style.setProperty('--c-primary-dim', t.primaryDim);
+    r.style.setProperty('--c-primary-faint', t.primaryFaint);
+  }, []);
+
   const setTheme = useCallback((key: ThemeKey) => {
     localStorage.setItem('mybini-theme', key);
+    applyThemeToDOM(THEMES[key]);
     emitStorageChange();
-  }, []);
+  }, [applyThemeToDOM]);
 
   const setBgPattern = useCallback((key: BgPatternKey) => {
     localStorage.setItem('mybini-bg-pattern', key);
@@ -216,30 +243,10 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const theme = THEMES[themeKey];
   const bgPattern = BG_PATTERNS[bgPatternKey];
 
+  // Apply theme on mount and when themeKey changes
   useEffect(() => {
-    const root = document.documentElement;
-    root.style.setProperty('--c-bg', theme.bg);
-    root.style.setProperty('--c-secondary', theme.secondary);
-    root.style.setProperty('--c-secondary-90', theme.secondary90);
-    root.style.setProperty('--c-secondary-80', theme.secondary80);
-    root.style.setProperty('--c-secondary-50', theme.secondary50);
-    root.style.setProperty('--c-secondary-light', theme.secondaryLight);
-    root.style.setProperty('--c-primary', theme.primary);
-    root.style.setProperty('--c-primary-hover', theme.primaryHover);
-    root.style.setProperty('--c-accent', theme.accent);
-    root.style.setProperty('--c-muted', theme.muted);
-    root.style.setProperty('--c-muted-dim', theme.mutedDim);
-    root.style.setProperty('--c-muted-faint', theme.mutedFaint);
-    root.style.setProperty('--c-border', theme.border);
-    root.style.setProperty('--c-border-light', theme.borderLight);
-    root.style.setProperty('--c-border-accent', theme.borderAccent);
-    root.style.setProperty('--c-hover-bg', theme.hoverBg);
-    root.style.setProperty('--c-surface', theme.surface);
-    root.style.setProperty('--c-primary-dim', theme.primaryDim);
-    root.style.setProperty('--c-primary-faint', theme.primaryFaint);
-    root.style.setProperty('--c-text-light', theme.textLight);
-    root.style.setProperty('--c-svg-fill', theme.svgFill);
-  }, [theme]);
+    applyThemeToDOM(theme);
+  }, [theme, applyThemeToDOM]);
 
   return (
     <ThemeContext.Provider value={{ theme, setTheme, bgPattern, setBgPattern }}>

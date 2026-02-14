@@ -1,8 +1,8 @@
 // Map persona IDs to local character images
 const PERSONA_IMAGES: Record<string, string> = {
-  luna: '/luna.png',
+  luna: '/luna-sweet.png',
   mia: '/mia.png',
-  aiko: '/aiko.png',
+  aiko: '/aiko-tsun.png',
 };
 
 // Fallback colors for personas without images

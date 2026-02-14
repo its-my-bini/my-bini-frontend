@@ -1,6 +1,7 @@
 @import "tailwindcss";
 
-:root {
+/* Default theme (pink / Rose) */
+:root, [data-theme="pink"] {
   --c-bg: #1a0a14;
   --c-secondary: #2d1525;
   --c-secondary-90: rgba(45,21,37,0.9);
@@ -22,6 +23,78 @@
   --c-primary-faint: rgba(236,72,153,0.15);
   --c-text-light: #fce7f3;
   --c-svg-fill: #3d1a2e;
+}
+
+[data-theme="purple"] {
+  --c-bg: #0f0a1a;
+  --c-secondary: #1e1530;
+  --c-secondary-90: rgba(30,21,48,0.9);
+  --c-secondary-80: rgba(30,21,48,0.8);
+  --c-secondary-50: rgba(30,21,48,0.5);
+  --c-secondary-light: #2d2045;
+  --c-primary: #a855f7;
+  --c-primary-hover: #9333ea;
+  --c-accent: #c084fc;
+  --c-muted: rgba(216,180,254,0.7);
+  --c-muted-dim: rgba(216,180,254,0.5);
+  --c-muted-faint: rgba(216,180,254,0.4);
+  --c-border: rgba(88,28,135,0.4);
+  --c-border-light: rgba(88,28,135,0.3);
+  --c-border-accent: rgba(168,85,247,0.5);
+  --c-hover-bg: rgba(88,28,135,0.4);
+  --c-surface: rgba(88,28,135,0.3);
+  --c-primary-dim: rgba(168,85,247,0.2);
+  --c-primary-faint: rgba(168,85,247,0.1);
+  --c-text-light: #f3e8ff;
+  --c-svg-fill: #2a1d45;
+}
+
+[data-theme="blue"] {
+  --c-bg: #0a1019;
+  --c-secondary: #152030;
+  --c-secondary-90: rgba(21,32,48,0.9);
+  --c-secondary-80: rgba(21,32,48,0.8);
+  --c-secondary-50: rgba(21,32,48,0.5);
+  --c-secondary-light: #1e2d45;
+  --c-primary: #3b82f6;
+  --c-primary-hover: #2563eb;
+  --c-accent: #60a5fa;
+  --c-muted: rgba(147,197,253,0.7);
+  --c-muted-dim: rgba(147,197,253,0.5);
+  --c-muted-faint: rgba(147,197,253,0.4);
+  --c-border: rgba(30,58,138,0.4);
+  --c-border-light: rgba(30,58,138,0.3);
+  --c-border-accent: rgba(59,130,246,0.5);
+  --c-hover-bg: rgba(30,58,138,0.4);
+  --c-surface: rgba(30,58,138,0.3);
+  --c-primary-dim: rgba(59,130,246,0.2);
+  --c-primary-faint: rgba(59,130,246,0.1);
+  --c-text-light: #dbeafe;
+  --c-svg-fill: #1a2d45;
+}
+
+[data-theme="green"] {
+  --c-bg: #0a1410;
+  --c-secondary: #152d20;
+  --c-secondary-90: rgba(21,45,32,0.9);
+  --c-secondary-80: rgba(21,45,32,0.8);
+  --c-secondary-50: rgba(21,45,32,0.5);
+  --c-secondary-light: #1e3d2e;
+  --c-primary: #10b981;
+  --c-primary-hover: #059669;
+  --c-accent: #34d399;
+  --c-muted: rgba(110,231,183,0.7);
+  --c-muted-dim: rgba(110,231,183,0.5);
+  --c-muted-faint: rgba(110,231,183,0.4);
+  --c-border: rgba(6,78,59,0.4);
+  --c-border-light: rgba(6,78,59,0.3);
+  --c-border-accent: rgba(16,185,129,0.5);
+  --c-hover-bg: rgba(6,78,59,0.4);
+  --c-surface: rgba(6,78,59,0.3);
+  --c-primary-dim: rgba(16,185,129,0.2);
+  --c-primary-faint: rgba(16,185,129,0.1);
+  --c-text-light: #d1fae5;
+  --c-svg-fill: #1a3d2a;
 }
 
 body {
