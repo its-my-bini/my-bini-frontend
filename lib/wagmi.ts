@@ -1,6 +1,6 @@
 import { getDefaultConfig } from "@rainbow-me/rainbowkit";
 import { http } from "wagmi";
-import { monadTestnet } from "viem/chains";
+import { monad } from "viem/chains";
 import {
   metaMaskWallet,
   okxWallet,
@@ -13,10 +13,10 @@ export const config = getDefaultConfig({
   appName: "My Bini",
   projectId:
     process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID || "YOUR_PROJECT_ID",
-  chains: [monadTestnet],
+  chains: [monad],
   ssr: true,
   transports: {
-    [monadTestnet.id]: http(process.env.NEXT_PUBLIC_RPC_URL),
+    [monad.id]: http(process.env.NEXT_PUBLIC_RPC_URL),
   },
   wallets: [
     {

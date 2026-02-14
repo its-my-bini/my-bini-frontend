@@ -1,12 +1,15 @@
-'use client';
+"use client";
 
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { WagmiProvider } from 'wagmi';
-import { RainbowKitProvider, darkTheme } from '@rainbow-me/rainbowkit';
-import { config } from '@/lib/wagmi';
-import '@rainbow-me/rainbowkit/styles.css';
-import { useState } from 'react';
-import { ThemeProvider, useTheme } from '@/lib/theme';
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { WagmiProvider } from "wagmi";
+import { RainbowKitProvider, darkTheme } from "@rainbow-me/rainbowkit";
+import { config } from "@/lib/wagmi";
+import "@rainbow-me/rainbowkit/styles.css";
+import { useState } from "react";
+import { ThemeProvider, useTheme } from "@/lib/theme";
+import { AuthProvider } from "@/lib/auth-context";
+import { monad } from "viem/chains";
+import { Toaster } from "sonner";
 
 export function Providers({ children }: { children: React.ReactNode }) {
   return (
@@ -36,15 +39,29 @@ function InnerProviders({ children }: { children: React.ReactNode }) {
     <WagmiProvider config={config}>
       <QueryClientProvider client={queryClient}>
         <RainbowKitProvider
-        modalSize='compact'
-        coolMode={true}
+          initialChain={monad}
+          modalSize="compact"
+          coolMode={true}
           theme={darkTheme({
             accentColor: theme.rainbowAccent,
-            accentColorForeground: 'white',
-            borderRadius: 'large',
+            accentColorForeground: "white",
+            borderRadius: "large",
           })}
         >
-          {children}
+          <AuthProvider>
+            {children}
+            <Toaster 
+              position="top-center" 
+              richColors 
+              toastOptions={{
+                style: {
+                  background: 'var(--c-card)',
+                  border: '1px solid var(--c-border)',
+                  color: 'white',
+                },
+              }}
+            />
+          </AuthProvider>
         </RainbowKitProvider>
       </QueryClientProvider>
     </WagmiProvider>
