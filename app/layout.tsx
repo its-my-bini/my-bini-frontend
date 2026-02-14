@@ -1,18 +1,35 @@
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import { Providers } from '@/components/Providers';
+import { PWARegister } from '@/components/PWARegister';
 import { Toaster } from 'sonner';
 import 'sonner/dist/styles.css';
 import './globals.css';
 
+export const viewport: Viewport = {
+  themeColor: '#1a0a14',
+};
+
 export const metadata: Metadata = {
   title: 'My Bini - AI Girlfriend',
   description: 'Chat with your AI girlfriend powered by Web3',
+  applicationName: 'My Bini',
+  manifest: '/manifest.webmanifest',
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: 'black-translucent',
+    title: 'My Bini',
+  },
+  formatDetection: {
+    telephone: false,
+  },
   icons: {
-    icon: '/my-bini.png',
-    apple: '/my-bini.png',
+    icon: [
+      { url: '/pwa-192.png', sizes: '192x192', type: 'image/png' },
+      { url: '/pwa-512.png', sizes: '512x512', type: 'image/png' },
+    ],
+    apple: '/apple-touch-icon.png',
   },
 };
-
 
 export default function RootLayout({
   children,
@@ -50,6 +67,7 @@ export default function RootLayout({
         />
       </head>
       <body className="antialiased bg-(--c-secondary)">
+        <PWARegister />
         <Providers>
           {children}
           <Toaster position="top-center" richColors theme="dark" />
