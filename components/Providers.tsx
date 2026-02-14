@@ -26,7 +26,7 @@ function InnerProviders({ children }: { children: React.ReactNode }) {
       new QueryClient({
         defaultOptions: {
           queries: {
-            staleTime: 1000 * 30, // 30s default — avoid unnecessary refetches on navigation
+            staleTime: 1000 * 60 * 5, // 5 min default — avoid unnecessary refetches on navigation
             gcTime: 1000 * 60 * 5, // 5 min garbage collection
             refetchOnWindowFocus: false, // Don't refetch just because user alt-tabbed
             retry: 1,

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { ArrowUp, Heart, ArrowLeft, X } from "lucide-react";
+import { SendHorizonal, Heart, ArrowLeft, X } from "lucide-react";
 import { useConnection } from "wagmi";
 import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "sonner";
@@ -60,7 +60,7 @@ export default function ChatInterface({ personaId }: ChatInterfaceProps) {
       const personas = data.personas || [];
       return personas.find((p: Persona) => p.id === personaId) || personas[0];
     },
-    staleTime: 1000 * 60 * 5, // Persona data rarely changes
+    staleTime: 1000 * 60 * 60, // Persona data rarely changes
   });
 
   // Fetch user profile for relationship stats
@@ -76,7 +76,7 @@ export default function ChatInterface({ personaId }: ChatInterfaceProps) {
       return data.profile;
     },
     enabled: !!address,
-    staleTime: 1000 * 60,
+    staleTime: 1000 * 60 * 60,
   });
 
   // Get relationship for current persona
@@ -114,7 +114,7 @@ export default function ChatInterface({ personaId }: ChatInterfaceProps) {
       return [];
     },
     enabled: !!address && !!personaId,
-    staleTime: 1000 * 60, // Cache for 1 min to preserve across navigation
+    staleTime: 1000 * 60 * 60, // Cache for 1 hour to preserve across navigation
   });
 
   // Load chat history into messages (only once on initial load)
@@ -573,7 +573,7 @@ export default function ChatInterface({ personaId }: ChatInterfaceProps) {
             disabled={!input.trim()}
             className="w-10 h-10 rounded-full bg-(--c-primary) flex items-center justify-center text-(--c-on-primary) hover:bg-(--c-primary-hover) transition disabled:opacity-50 disabled:bg-(--c-hover-bg)"
           >
-            <ArrowUp size={20} strokeWidth={3} />
+            <SendHorizonal size={20} strokeWidth={3} />
           </button>
         </div>
       </div>

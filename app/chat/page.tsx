@@ -47,7 +47,7 @@ export default function DashboardPage() {
       return data.profile;
     },
     enabled: !!address,
-    staleTime: 1000 * 60, // 1 min — profile doesn't change that often
+    staleTime: 1000 * 60 * 60, // 1 hour — profile doesn't change that often
   });
 
   // Prefetch chat routes for faster navigation
@@ -91,7 +91,7 @@ export default function DashboardPage() {
         if (data.messages) return data.messages;
         return [];
       },
-      staleTime: 1000 * 60,
+      staleTime: 1000 * 60 * 60, // 1 hour — chat history doesn't change that often
     });
   };
 

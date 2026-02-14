@@ -53,7 +53,7 @@ export default function ProfilePage() {
       return data.profile;
     },
     enabled: !!address,
-    staleTime: 1000 * 60, // 1 min
+    staleTime: 1000 * 60 * 60, // 1 hour — profile doesn't change that often
   });
 
   // Fetch all personas for images and details
@@ -67,7 +67,7 @@ export default function ProfilePage() {
       const data = await res.json();
       return data.personas || [];
     },
-    staleTime: 1000 * 60 * 30, // 5 min — personas rarely change
+    staleTime: 1000 * 60 * 60, // 1 hour — personas rarely change
   });
 
   const isLoading = isLoadingProfile || isLoadingPersonas;
