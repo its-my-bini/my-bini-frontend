@@ -6,7 +6,7 @@ export const API_URL =
 export const TREASURY_ADDRESS = (process.env.NEXT_PUBLIC_TREASURY_ADDRESS ||
   '0xF9a7cE64DfddD0666E8Be5f29F182Df51bd2E76E') as HexAddress;
 
-export const EXPLORER_URL = 'https://explorer.monad.xyz';
+export const EXPLORER_URL = 'https://monadvision.com';
 
 export const getBlockExplorerUrl = (hash: string) =>
   `${EXPLORER_URL}/tx/${hash}`;
